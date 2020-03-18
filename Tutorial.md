@@ -51,6 +51,10 @@ The open Function takes two parameter: the first parameter is the path to the fi
 * a+: Opens a file for both appending and reading.
 * ab+: Opens a file for both appending and reading in binary mode.
 
+For further help here is the documentation of reading/writing files in python https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files
+
+Hint: In the documentation is also explained how to format a string which you will need to delete the + from the ID String
+
 Now use this knowlegdge to create a new optimizied Forensic Logfile.
 
 
