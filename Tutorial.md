@@ -131,6 +131,7 @@ In this subtask we want to receive the following information about the IP Adress
 * City
 * latitude
 * longitude
+* DNS name
   
 
 ### Step 1: Receive Geo Location Data 
