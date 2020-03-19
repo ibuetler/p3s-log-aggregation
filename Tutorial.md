@@ -59,6 +59,7 @@ The Forensic.log File is in its current state not very useful to merge with the 
 For Example an entry in the forensic.log file looks currently like this:
 
 +XbuUln8AAAEAABEHgLsAAACR|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
+
 -XbuUln8AAAEAABEHgLsAAACR
 
 A resulting line in the optimized forensic.log should look like this:
