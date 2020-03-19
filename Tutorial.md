@@ -120,10 +120,10 @@ The following code snipet shows how to nest multiple with statements (one file i
 ``` 
   
 
-For further help here is the documentation of reading/writing files and manipulating strings in python https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files 
+For further help here is the documentation of reading/writing files in python3: https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files 
 
   
-Hint: In the documentation is also explained how to format a string which you will need to delete the + from the ID String and how to exclude the second line with the -ID.
+Hint: If you need help to know which string manipulating functions python provides you could use this link: http://python-ds.com/python-3-string-methods. You will need this funtions to delete the leading + from the ID and delete the line with the leading -.
 
 
 Now use this knowledge to create a new optimized Forensic Logfile. 
