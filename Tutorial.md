@@ -108,9 +108,19 @@ The open Function takes two parameter: the first parameter is the path to the fi
 
 * ab+: Opens a file for both appending and reading in binary mode. 
 
+The following code snipet shows how to nest multiple with statements (one file in write mode and one in read mode):
+
+```python 
+
+ with open('filename', 'w') as f1:
+        with open('filename', 'r') as f2:
+            for line in f2:
+                  f1.write(line)
+
+``` 
   
 
-For further help here is the documentation of reading/writing files in python https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files 
+For further help here is the documentation of reading/writing files and manipulating strings in python https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files 
 
   
 Hint: In the documentation is also explained how to format a string which you will need to delete the + from the ID String 
