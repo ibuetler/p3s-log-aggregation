@@ -126,7 +126,7 @@ For further help here is the documentation of reading/writing files in python3: 
 Hint: If you need help to know which string manipulating functions python provides you could use this link: http://python-ds.com/python-3-string-methods. You will need this funtions to delete the leading + from the ID and delete the line with the leading -.
 
 
-Now use this knowledge to create a new optimized Forensic Logfile. 
+Now use this knowledge to create a new optimized Forensic Logfile with the format of stated above.
 
 
 ### Step 2: Merging Files 
@@ -171,8 +171,27 @@ https://geoip2.readthedocs.io/en/latest/
 Hint: Extracting the IP you could use a regex pattern. You can create a pattern with the following snippet:
 ```python 
 import re
-pattern = re.compile("")
+pattern = re.compile("your pattern")
 ``` 
+
+The Syntax for creating such a pattern can be found in this python documentation:
+https://docs.python.org/3/library/re.html#re.findall
+
+It is important to notice than when you will use the .search() function for your pattern you will receive a Match Object but you can extract the matched string with the .group() function.
+
+This Code Snippet illustrates this:
+
+```python 
+import re
+pattern = re.compile("your pattern")
+m = pattern.search(line)
+ip = m.group(0)
+``` 
+The Parameter 0 simply specifies that we want the whole string as a result. You could also specify to receive subgroups of the matched pattern by entering another number as a parameter but this is not required for our task.
+
+Now, you should have all the knowledge to do the following:
+Write a function to iterate over the normalized file and extract all IP's with a regex pattern. Then access the geolite2 database and receive country,city,latitude,longitude of the IP Address and store it in variables. Print the solution on your console to see if it worked. We will extend this function in the next step.
+
 
 ### Step 2: DNS look up
 
