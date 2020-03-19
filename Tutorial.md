@@ -8,7 +8,6 @@
 
 In this tutorial, you will be given two log files of users which tried to attempt to log in to a web site. Both log files have different information but one column in common. Our Goal is to merge this files in to one and find information about the IP Addresses, for example from which country the users tried to access. Finally, we want wo visualize everything in google maps. 
 
-  
 
 ### What you'll learn 
 
@@ -57,12 +56,19 @@ It is importance to notice that even the structure of the GET Requests can be di
 
 The Forensic.log File is in its current state not very useful to merge with the acces.log. Since the forensic has always two lines starting with the +ID and then ending with a line with the -ID. I would recommend to create a new log file with writing only the lines which start with + and at the same time delete the leading + from the ID. This will make the merging much easier in the next steps. 
 
-  
+For Example an entry in the forensic.log file looks currently like this:
 
++XbuUln8AAAEAABEHgLsAAACR|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
+-XbuUln8AAAEAABEHgLsAAACR
+
+A resulting line in the optimized forensic.log should look like this:
+
+XbuUln8AAAEAABEHgLsAAACR|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
+
+  
 In Python 3 it is best to open a file with the "with" keyword. It is used in exception handling to make the code cleaner and much more readable. It simplifies the management of common resources like file streams. There is for Example no need to use the close function which the "with" will take care of. 
 
   
-
 The following code snippet opens a file and iterates over the lines: 
 
   
@@ -78,8 +84,6 @@ with open("yourfile.txt", "w") as f:
 ``` 
 
 The open Function takes two parameter: the first parameter is the path to the file and the second parameter in which mode the file should be opend. There exists the following modes: 
-
-  
 
 * r: Opens the file in read-only mode. Starts reading from the beginning of the file and is the default mode for the open() function. 
 
@@ -108,20 +112,24 @@ The open Function takes two parameter: the first parameter is the path to the fi
 For further help here is the documentation of reading/writing files in python https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files 
 
   
-
 Hint: In the documentation is also explained how to format a string which you will need to delete the + from the ID String 
 
-  
 
 Now use this knowledge to create a new optimized Forensic Logfile. 
 
 
 ### Step 2: Merging Files 
 
-  
 
-In the next step you should now merge the optimized forensic.log file with acces.log file. Compare the ID's and if they match write both lines in a new normalized.log file 
+In the next step you should now merge the optimized forensic.log file with acces.log file. Compare the ID's and if they match write both lines in a new normalized.log file.
 
+Write first the line from the acces.log file with separating it with the '|' chracter at the end. This will ensure that you have a common delimiter over the whole file which will make the next steps easier.
+
+For example a resulting line should look like this:
+
+XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST /cron/vmcontrol.html?job=updateList HTTP/1.1" 200 -|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
+
+Hint: The files have a large number of entries. Comparing a line with each line of another file will take a lot of time. Maybe copy two or three lines in a different file to see if your solution works.
   
 
 ## Subtask 2: Log Enrichment 
