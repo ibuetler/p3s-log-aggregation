@@ -158,6 +158,12 @@ In the following documentation you will find all the information how to receive 
 
 https://geoip2.readthedocs.io/en/latest/
 
+Hint: Extracting the IP you could use a regex pattern. You can create a pattern with the following snippet:
+```python 
+import re
+pattern = re.compile("")
+``` 
+
 ### Step 2: DNS look up
 
 Now we will expand our function from Step 1 with the DNS information of the IP Address.
