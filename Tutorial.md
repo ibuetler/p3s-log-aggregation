@@ -145,7 +145,7 @@ In this subtask we want to receive the following information about the IP Adress
 
 ### Step 1: Receive Geo Location Data 
 
-We will use the library geoip2 to receive all the geolocation data. Try to acces the database and save all information in variables.
+We will use the library geoip2 to receive all the geolocation data. Write a function which accesses the database and save all information in variables.
 
 you can load the database with the following code:
 
@@ -159,6 +159,8 @@ In the following documentation you will find all the information how to receive 
 https://geoip2.readthedocs.io/en/latest/
 
 ### Step 2: DNS look up
+
+Now we will expand our function from Step 1 with the DNS information of the IP Address.
 
 ### Step 3: Enrich File
 
