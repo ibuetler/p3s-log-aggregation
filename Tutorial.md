@@ -201,29 +201,17 @@ with open("yourfile.txt", "w") as f:
 
 ``` 
 
-The open Function takes two parameter: the first parameter is the path to the file and the second parameter in which mode the file should be opend. There exists the following modes: 
+The open Function takes two parameter: the first parameter is the path to the file and the second parameter in which mode the file should be opend. There exists multiple mode but the most important are: 
 
 * r: Opens the file in read-only mode. Starts reading from the beginning of the file and is the default mode for the open() function. 
-
-* rb: Opens the file as read-only in binary format and starts reading from the beginning of the file. While binary format can be used for different purposes, it is usually used when dealing with things like images, videos, etc. 
 
 * r+: Opens a file for reading and writing, placing the pointer at the beginning of the file. 
 
 * w: Opens in write-only mode. The pointer is placed at the beginning of the file and this will overwrite any existing file with the same name. It will create a new file if one with the same name doesn't exist. 
 
-* wb: Opens a write-only file in binary mode. 
-
-* w+: Opens a file for writing and reading. 
-
-* wb+: Opens a file for writing and reading in binary mode. 
+* w+: Opens a file for writing and reading.  
 
 * a: Opens a file for appending new information to it. The pointer is placed at the end of the file. A new file is created if one with the same name doesn't exist. 
-
-* ab: Opens a file for appending in binary mode. 
-
-* a+: Opens a file for both appending and reading. 
-
-* ab+: Opens a file for both appending and reading in binary mode. 
 
 The following code snipet shows how to nest multiple with statements (one file in write mode and one in read mode):
 
@@ -267,7 +255,7 @@ Hint: The forensic.log and access.log have many different entries. Comparing a l
 
 ### Step 1
 
-fter we have merged the forensic.log with the access.log in the previous step, we now want to enrich the ip address in the log with it's unique geo location. Thus, we need to lookup the geo location per ip address. We will use the library geoip2 for this task. The lookup could be done against an online resource - but for the sake of this tutorial, we will lookup against a local copy of the GeoIP database.
+After we have merged the forensic.log with the access.log in the previous step, we now want to enrich the ip address in the log with it's unique geo location. Thus, we need to lookup the geo location per ip address. We will use the library geoip2 for this task. The lookup could be done against an online resource - but for the sake of this tutorial, we will lookup against a local copy of the GeoIP database.
 
 * Country
 * City
@@ -322,7 +310,7 @@ A free database is used in this task. It is not 100% accurate and does not alway
 
 The function of Step 1 will now be extended by querying the associated DNS name for the IP address and saving in a variable.
 
-To achieve this we use the socket library of Python.  A DNS name to the IP address can be queried with the function "gethostbyaddr()". Note that if no DNS name is found, an exception is thrown. This exception must be caught and the value of the DNS variable must be set to None.
+To achieve this the socket library of Python can be used.  A DNS name to the IP address can be queried with the function "gethostbyaddr()". Note that if no DNS name is found, an exception is thrown. This exception must be caught and the value of the DNS variable must be set to None.
 
 The following snippet illustrates this:
 
@@ -336,7 +324,7 @@ import socket
 ```
 The Indexing with [0] is used because the method returns a tuple with: Host Name, Alias list for the IP address if any, IP address of the host.
 
-Extend the Function from step 1 with querying the DNS Name and print it on the console to see if it works.
+Extend the Function from step 1 with querying the DNS Name and print the result on the console to see if it works.
 
 ### Step 3
 
@@ -350,15 +338,78 @@ import in_place
  with in_place.InPlace('../normalized.log') as file:
         for line in file:
         newline = line.rstrip()
-        # append the queried data to the line
+        # append the queried data to the new line variable
         file.write(newline)
 ```
 In the above code the file.write() will automatically overwrite the old line. Therefore it is best to save the old line, remove the line break with rstrip() and then extend the string with the data.
 
-  
+Since, it is possible that the country, city and DNS variable can be NONE check if they are not NONE and only append them to the newline variable if the check results in true. The format should be the following "|Counry: Switzerland|"  Illustrated by this snippet:
+
+```python
+
+     if country is not None:
+       newline += ('|Country: ' + country)
+
+```
+A resulting Log entry in the normalized File should look like this:
+
+XbuV-n8AAAEAABAxX@oAAABF 114.5.212.30 - - [01/Nov/2019:03:18:38 +0100] "GET /misc/js/hllogin-o.js HTTP/1.1" 200 817|GET /misc/js/hllogin-o.js HTTP/1.1|Host:www.hacking-lab.com|Connection:keep-alive|User-Agent:Mozilla/5.0 (Linux; U; Android 8.1.0; en-US; SM-G610F Build/M1AJQ) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/12.13.4.1214 Mobile Safari/537.36|Accept:*/*|Referer:https%3a//www.hacking-lab.com/user/login/|Accept-Encoding:gzip, deflate, br|Accept-Language:id,en-US;q=0.8|Cookie:HLSSL=3FpK/ZpvSNrqdjUvxDo861sOu5V5jEJT; JSESSIONID=4A2C41D73A7BA40ADC9D1E75B24D82E5|DNS:114-5-212-30.resources.indosat.com| Country: Indonesia|City: Jakarta|Latitude:-6.1741|Longitude:106.8296
+
+In the normalized file there is again a large amount of data. It is best to copy some lines into a test file to see if the solution works. 
 
 ## Visualizing log files on Google Maps
 
- 
+### Theory KML-Files
 
- 
+In Google Maps or Google Earth data can be displayed with KML-Files. KML uses a tag-based structure with nested elements and attributes and is based on the XML standard.
+
+This is an example of a KML-File with the information of one point:
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Placemark>
+    <name>Simple placemark</name>
+    <description>Attached to the ground. Intelligently places itself 
+       at the height of the underlying terrain.</description>
+    <Point>
+      <coordinates>-122.0822035425683,37.42228990140251,0</coordinates>
+    </Point>
+  </Placemark>
+</kml>
+```
+
+To create a KML file with Python, the library simplekml can be used. A point should contain the IP address as the name and a description with the contents of the log entry. For the coordinate data the latitude has always to be specified first and then the longitude.
+
+This code snippet shows how simplekml is used to create a KML file:
+
+```python
+kml = simplekml.Kml() #creates the kml file
+kml.newpoint(name=ip, coords=[(longitude, latitude)]).description = line  #create a point with the ip as name and log entry as description
+kml.save('../locations.kml') #save the kml file with the specified name
+
+```
+
+### Step 1
+
+To solve the task, the following data must be extracted from the normalized.log file:
+
+* IP address
+* Longitude
+* Latitude
+
+For the IP Address the Regex Pattern from Step1 of the Log File Data Enrichment subtask. If, the Log entry of the normalized.log has the format showed in Step 3 of the previous subtask, it is best to extract the latitude with a regex pattern but for the longitude simply the partition string function can be used.
+
+Write a function that extracts the required data from the .normalized log File. Output the data to the console to see if everything worked.
+
+### Step 2
+
+Now rewrite the function from Step 1 to create a KML file with the following information per point:
+* IP address as name
+* Entire log entry as description
+
+### Step 3
+
+The created KML File can be uploaded in Google Maps in the following way:
+
+Open your browser and navigate to Google Maps.Click on the 3 dashes in the upper left corner (Menu). Select "your places" from the list. Under the point "your places" select "Maps". Click on the point "Create Map" at the very bottom. Then use the import point to upload your KML file.
