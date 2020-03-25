@@ -6,73 +6,190 @@
 
 ## Introduction 
 
-In this tutorial, you will be given two log files of users which tried to attempt to log in to a web site. Both log files have different information but one column in common. Our Goal is to merge this files in to one and find information about the IP Addresses, for example from which country the users tried to access. Finally, we want wo visualize everything in google maps. 
+This challenge is about manipulating (log) files with Python3. Learn how to correlate, merge, enrich and visualize with Python3. You will get two files (see picture below)
 
 
-### What you'll learn 
+### Learn how to ...
 
-* How to merge two log files in to one 
+* merge and correlate the two given log files into a single file
 
-* How to perform a DNS-Look up with Python3 
+* enrich the resulting log file by performing DNS lookups
 
-* How to receive Geolocation Data about an IP Address with Python3 
+* enrich the resulting log file by adding GEO location information (to ip address)
 
-* How to enrich a log file with data 
+* visualize the resuluting log file on Google Maps.
 
-* How to create a KML File and display it on Google Maps with Python3 
 
-  
+## Preperation
 
-### What you'll need 
+### Step1
+Please download the webserver-logs.zip from RESOURCES to /home/hacker/Downloads
 
-* The following Log Files: acces.log, forensic.log 
-* Geoip2 Database
+LOG
 
-  
+```
+╭─root@hlkali  /home/hacker/Downloads  
+╰─$ ls -al 
+total 3700
+drwxr-xr-x  2 hacker hacker    4096 Mar 20 11:24 .
+drwxr-xr-x 35 hacker hacker    4096 Mar 20 09:44 ..
+-rw-r--r--  1 hacker hacker 3776821 Mar 20 11:24 webserver-logs.zip
 
-## Subtask 1: Log Normalization 
 
-  
+╭─root@hlkali  /home/hacker/Downloads  
+╰─$ md5sum webserver-logs.zip 
+d479b45c92411a6853d1e83358e0b5bc  webserver-logs.zip
 
-In this Task our goal is to merge both log Files into one.  
 
-  
+╭─root@hlkali  /home/hacker/Downloads  
+╰─$ unzip webserver-logs.zip 
+Archive:  webserver-logs.zip
+   creating: webserver-logs/
+  inflating: webserver-logs/access.log  
+  inflating: webserver-logs/forensic.log  
+╭─root@hlkali  /home/hacker/Downloads  
 
-The log file acces.log consists of the following data: ID, IP, Timestamp, HTTP Method (POST or GET). 
 
-  
+╰─$ ls -al webserver-logs
+total 55448
+drwxr-xr-x 2 root   root       4096 Mar 20  2020 .
+drwxr-xr-x 3 hacker hacker     4096 Mar 20 11:24 ..
+-rw-r--r-- 1 root   root   11062573 Mar  4 13:26 access.log
+-rw-r--r-- 1 root   root   45706362 Mar  4 13:24 forensic.log
 
-The log file forensic.log is a bit more complex there is a different structure for a POST and GET Method. For example a POST Method consists of: ID, Method, Accept-Encoding, Content-Length, Host, Content-Type, Connection, User-Agent whereas a GET usually consists of the following structure: ID, Method, Host, Connection, Upgrade-Insecure-Request, User-Agent, Accept, Referer, Accept-Encoding, Accept-Language. 
+```
 
-  
+you should have your access.log and forensic.log available.
 
-It is importance to notice that even the structure of the GET Requests can be different but they all will start with the ID of the entry and end with the ID. 
+### Step2
 
-  
+Please have a closer look at both log files. May you want to see the last 5 log entries of both log files using the following command tail -5 access.log and tail -5 forensic.log
 
-### Step 1: Optimize Forensic.log File 
+LOG
 
-  
+```
+╭─root@hlkali  /home/hacker/Downloads  
+╰─$ cd /home/hacker/Downloads/webserver-logs                                                                            1 ↵
 
-The Forensic.log File is in its current state not very useful to merge with the acces.log. Since the forensic has always two lines starting with the +ID and then ending with a line with the -ID. I would recommend to create a new log file with writing only the lines which start with + and at the same time delete the leading + from the ID. This will make the merging much easier in the next steps. 
 
-For Example an entry in the forensic.log file looks currently like this:
+╭─root@hlkali  /home/hacker/Downloads/webserver-logs  
+╰─$ tail -5 access.log 
+Xgq5@H8AAAEAAH743ucAAAAL 66.249.76.144 - - [31/Dec/2019:04:01:12 +0100] "GET /misc/css/tabs/ui.progressbar.css HTTP/1.1" 200 130
+Xgq5@X8AAAEAAH743ugAAAAL 66.249.76.144 - - [31/Dec/2019:04:01:13 +0100] "GET /misc/css/tabs/ui.dialog.css HTTP/1.1" 200 447
+Xgq5@X8AAAEAAH743ukAAAAL 66.249.76.144 - - [31/Dec/2019:04:01:13 +0100] "GET /misc/css/tabs/ui.core.css HTTP/1.1" 200 630
+Xgq6KX8AAAEAAH743uoAAAAU 212.254.246.102 - - [31/Dec/2019:04:02:01 +0100] "GET /cron/vmcontrol.html?job=getList HTTP/1.1" 200 64
+Xgq6KX8AAAEAAH91usgAAACS 212.254.246.103 - - [31/Dec/2019:04:02:01 +0100] "GET /cron/vmcontrol.html?job=getList HTTP/1.1" 200 64
+
+
+╭─root@hlkali  /home/hacker/Downloads/webserver-logs  
+╰─$ tail -5 forensic.log 
+-Xgq5@X8AAAEAAH743ukAAAAL
++Xgq6KX8AAAEAAH743uoAAAAU|GET /cron/vmcontrol.html?job=getList HTTP/1.1|Accept-Encoding:identity|Host:www.hacking-lab.com|Connection:close|User-Agent:Python-urllib/2.7
+-Xgq6KX8AAAEAAH743uoAAAAU
++Xgq6KX8AAAEAAH91usgAAACS|GET /cron/vmcontrol.html?job=getList HTTP/1.1|Accept-Encoding:identity|Host:www.hacking-lab.com|Connection:close|User-Agent:Python-urllib/2.7
+-Xgq6KX8AAAEAAH91usgAAACS
+```
+
+in the access.log, every log entry is on one single line. In the forensic.log you will find log entries in between the forensicID. Such a log entry starts with the +<number> and closes with -<number>
+ 
+### Step3
+
+We have a pipenv python3 skeleton for you. please run the following commands (e.g. Hacking-Lab LiveCD) and setup your python3 environment.
+
+```
+mkdir -p /opt/git
+cd /opt/git
+git clone https://github.com/ibuetler/p3s-log-aggregation.git
+cd /opt/git/p3s-log-aggregation
+pipenv --python 3 sync
+pipenv --python 3 shell
+```
+
+LOG
+
+```
+╭─root@hlkali  /home/hacker/Downloads  
+╰─$ mkdir -p /opt/git                                            
+
+
+╭─root@hlkali  /opt/git  
+╰─$ cd /opt/git 
+
+
+╭─root@hlkali  /opt/git  
+╰─$ git clone https://github.com/ibuetler/p3s-log-aggregation.git
+Cloning into 'p3s-log-aggregation'...
+remote: Enumerating objects: 50, done.
+remote: Counting objects: 100% (50/50), done.
+remote: Compressing objects: 100% (47/47), done.
+remote: Total 50 (delta 13), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (50/50), 14.77 KiB | 540.00 KiB/s, done.
+
+
+╭─root@hlkali  /opt/git  
+╰─$ cd p3s-log-aggregation 
+
+
+╭─root@hlkali  /opt/git/p3s-log-aggregation  ‹master› 
+╰─$ pipenv shell
+Creating a virtualenv for this project…
+Using /usr/bin/python3 (3.7.7) to create virtualenv…
+⠋Already using interpreter /usr/bin/python3
+Using base prefix '/usr'
+New python executable in /root/.local/share/virtualenvs/p3s-log-aggregation-UEkZgZS6/bin/python3
+Also creating executable in /root/.local/share/virtualenvs/p3s-log-aggregation-UEkZgZS6/bin/python
+Installing setuptools, pkg_resources, pip, wheel...done.
+
+Virtualenv location: /root/.local/share/virtualenvs/p3s-log-aggregation-UEkZgZS6
+Creating a Pipfile for this project…
+Spawning environment shell (/bin/bash). Use 'exit' to leave.
+root@hlkali:/opt/git/p3s-log-aggregation# . /root/.local/share/virtualenvs/p3s-log-aggregation-UEkZgZS6/bin/activate
+(p3s-log-aggregation-UEkZgZS6) root@hlkali:/opt/git/p3s-log-aggregation# 
+
+```
+
+you should now have your python3 environment ready for this exercise.
+
+## Log File Normalization
+
+### Step1
+
+First, we need to merge and normalize the two given log files.
+
+The access.log consists of the following information
+
+* ID
+* IP
+* timestamp
+* HTTP Method (POST or GET)
+* URL
+
+example: XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST /cron/vmcontrol.html?job=updateList HTTP/1.1" 200 -
+
+The forensic.log is more comprehensive and complex. There are different formats for the POST and GET Method. The log format of a POST entry contains: ID, Method, Accept-Encoding, Content-Length, Host, Content-Type, Connection, User-Agent whereas the log format of a GET consists of ID, Method, Host, Connection, Upgrade-Insecure-Request, User-Agent, Accept, Referer, Accept-Encoding, Accept-Language.
+
+It is importance to notice that even the structure of the GET Requests can be different but they all will start with the +forensicID of the entry and end with the -forensicID.
+
+ 
+
+### Step 2 
+
+The original forensic.log is not very easy to merge and correlate with the access.log. As the forensic.log log entries announce a new log entry with the +forensicID and closing the log entry with a -forensicID, it is preferred to convert the forensic.log into a new log where every log entry is on a single line. This is recommended, because the access.log contains one log entry per line.
+
+A log entry in the forensic.log looks like this:
 
 +XbuUln8AAAEAABEHgLsAAACR|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
-
 -XbuUln8AAAEAABEHgLsAAACR
 
-A resulting line in the optimized forensic.log should look like this:
+It should look like this, after the first normalization:
 
 XbuUln8AAAEAABEHgLsAAACR|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
 
+### Theory Python 3 File Manipulation
   
-In Python 3 it is best to open a file with the "with" keyword. It is used in exception handling to make the code cleaner and much more readable. It simplifies the management of common resources like file streams. There is for Example no need to use the close function which the "with" will take care of. 
+In Python3 it is best to open a file with the "with" keyword. It is used in exception handling to make the code cleaner and much more readable. It simplifies the management of common resources like file streams. There is for example no need to use the close function, because the "with" keyword will take care of.
 
-  
-The following code snippet opens a file and iterates over the lines: 
-
-  
+The following code snippet opens a file with the keyword with and iterates over the lines:
 
 ```python 
 
@@ -120,32 +237,38 @@ The following code snipet shows how to nest multiple with statements (one file i
 ``` 
   
 
-For further help here is the documentation of reading/writing files in python3: https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files 
+For more information, please consult the reading/writing manual:
 
-  
-Hint: If you need help to know which string manipulating functions python provides you could use this link: http://python-ds.com/python-3-string-methods. You will need this funtions to delete the leading + from the ID and delete the line with the leading -.
+* https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files
 
+Hint: Please have a closer look at the following string manipulation library
 
-Now use this knowledge to create a new optimized Forensic Logfile with the format of stated above.
-
-
-### Step 2: Merging Files 
+* http://python-ds.com/python-3-string-methods
 
 
-In the next step you should now merge the optimized forensic.log file with acces.log file. Compare the ID's and if they match write both lines in a new normalized.log file.
+You will need this to delete the leading + from the forensicID and delete the line with the leading -forensicID.
 
-Write first the line from the acces.log file with separating it with the '|' chracter at the end. This will ensure that you have a common delimiter over the whole file which will make the next steps easier.
 
-For example a resulting line should look like this:
+### Step 3
+
+
+Please merge the optimized forensic.log file with access.log file. Compare the forensicID's and if they match write both lines into a new normalized.log file.
+
+Write first the line from the access.log file with separating it with the '|' chracter at the end. This will ensure that you have a common delimiter over the whole file which will make the next steps easier.
+
+A resulting log entry should look like this:
 
 XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST /cron/vmcontrol.html?job=updateList HTTP/1.1" 200 -|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
 
-Hint: The files have a large number of entries. Comparing a line with each line of another file will take a lot of time. Maybe copy two or three lines in a different file to see if your solution works.
+Hint: The forensic.log and access.log have many different entries. Comparing a line with each line of another file will take a lot of time. Maybe copy two or three lines in a different file to see if your solution works.
   
 
-## Subtask 2: Log Enrichment 
+## Log File Data Enrichment
 
-In this subtask we want to receive the following information about the IP Adresses and enrich the log file with it:
+### Step 1
+
+fter we have merged the forensic.log with the access.log in the previous step, we now want to enrich the ip address in the log with it's unique geo location. Thus, we need to lookup the geo location per ip address. We will use the library geoip2 for this task. The lookup could be done against an online resource - but for the sake of this tutorial, we will lookup against a local copy of the GeoIP database.
+
 * Country
 * City
 * latitude
@@ -153,11 +276,9 @@ In this subtask we want to receive the following information about the IP Adress
 * DNS name
   
 
-### Step 1: Receive Geo Location Data 
+### Theory GeoIP Lookup
 
-We will use the library geoip2 to receive all the geolocation data. Write a function which accesses the database and save all information in variables.
-
-you can load the database with the following code:
+Assuming you have previously download the GeoLite database, you can load the database with the following code:
 
 ```python 
  import geoip2.database as database
@@ -169,6 +290,7 @@ In the following documentation you will find all the information how to receive 
 https://geoip2.readthedocs.io/en/latest/
 
 Hint: Extracting the IP you could use a regex pattern. You can create a pattern with the following snippet:
+
 ```python 
 import re
 pattern = re.compile("your pattern")
@@ -189,19 +311,15 @@ ip = m.group(0)
 ``` 
 The Parameter 0 simply specifies that we want the whole string as a result. You could also specify to receive subgroups of the matched pattern by entering another number as a parameter but this is not required for our task.
 
-Now, you should have all the knowledge to do the following:
-Write a function to iterate over the normalized file and extract all IP's with a regex pattern. Then access the geolite2 database and receive country,city,latitude,longitude of the IP Address and store it in variables. Print the solution on your console to see if it worked. We will extend this function in the next step.
 
+### Step 2:
 
-### Step 2: DNS look up
+#### Theory DNS-Look up
 
-Now we will expand our function from Step 1 with the DNS information of the IP Address.
-
-### Step 3: Enrich File
 
   
 
-## Subtask 3: Display Location on Google Maps 
+## Visualizing log files on Google Maps
 
  
 
