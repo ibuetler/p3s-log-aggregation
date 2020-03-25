@@ -299,23 +299,61 @@ pattern = re.compile("your pattern")
 The Syntax for creating such a pattern can be found in this python documentation:
 https://docs.python.org/3/library/re.html#re.findall
 
-It is important to notice than when you will use the .search() function for your pattern you will receive a Match Object but you can extract the matched string with the .group() function.
+It is important to notice that the use of the .search() function for the pattern will return a Match Object. The matched string can be extracted with the .group() function.
 
 This Code Snippet illustrates this:
 
 ```python 
 import re
 pattern = re.compile("your pattern")
-m = pattern.search(line)
-ip = m.group(0)
+ip = pattern.search("string").group(0)
 ``` 
-The Parameter 0 simply specifies that we want the whole string as a result. You could also specify to receive subgroups of the matched pattern by entering another number as a parameter but this is not required for our task.
+The Parameter 0 simply specifies that the whole string should be returned as a result. It is possible to receive subgroups of the matched pattern by entering another number as a parameter but this is not required for this task.
 
+Now write a function that extracts the IP address from each line and stores it in a variable. Additionally, all geo data should be stored in variables. Print the solution on the console to see if it worked. This function will be extended in the next steps. 
+
+### Important:
+
+A free database is used in this task. It is not 100% accurate and does not always find the corresponding country or city. However, the longitude and latitude are always found. If, the city or country is not found the value of the variable will be set to "None"
 
 ### Step 2:
 
 #### Theory DNS-Look up
 
+The function of Step 1 will now be extended by querying the associated DNS name for the IP address and saving in a variable.
+
+To achieve this we use the socket library of Python.  A DNS name to the IP address can be queried with the function "gethostbyaddr()". Note that if no DNS name is found, an exception is thrown. This exception must be caught and the value of the DNS variable must be set to None.
+
+The following snippet illustrates this:
+
+```python
+import socket
+
+ try:
+     DNS = socket.gethostbyaddr(ip)[0]
+  except socket.herror:
+     DNS = None
+```
+The Indexing with [0] is used because the method returns a tuple with: Host Name, Alias list for the IP address if any, IP address of the host.
+
+Extend the Function from step 1 with querying the DNS Name and print it on the console to see if it works.
+
+### Step 3
+
+Now the normalized log file needs to be extended with the queried data. To achieve this as easy as possible, we use the in_place library. It is not possible to safely write to a file and read it at the same time. Any change you make could overwrite the content that has not yet been read. To do it safely the file must be read into a buffer, updating any lines as required, and then re-write the file.
+
+The in_Place Libary will take care of the buffering and therefore makes the coding much easier. The following code illustrates how to use the library:
+
+```python
+import in_place
+
+ with in_place.InPlace('../normalized.log') as file:
+        for line in file:
+        newline = line.rstrip()
+        # append the queried data to the line
+        file.write(newline)
+```
+In the above code the file.write() will automatically overwrite the old line. Therefore it is best to save the old line, remove the line break with rstrip() and then extend the string with the data.
 
   
 
