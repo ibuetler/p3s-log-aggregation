@@ -398,7 +398,7 @@ To solve the task, the following data must be extracted from the normalized.log 
 * Longitude
 * Latitude
 
-For the IP Address the Regex Pattern from Step1 of the Log File Data Enrichment subtask. If, the Log entry of the normalized.log has the format showed in Step 3 of the previous subtask, it is best to extract the latitude with a regex pattern but for the longitude simply the partition string function can be used.
+For the IP Address the Regex Pattern from Step1 of the Log File Data Enrichment subtask can be used. If, the Log entry of the normalized.log has the format showed in Step 3 of the previous subtask, it is best to extract the latitude with a regex pattern but for the longitude simply the partition string function can be used.
 
 Write a function that extracts the required data from the .normalized log File. Output the data to the console to see if everything worked.
 
@@ -412,4 +412,4 @@ Now rewrite the function from Step 1 to create a KML file with the following inf
 
 The created KML File can be uploaded in Google Maps in the following way:
 
-Open your browser and navigate to Google Maps.Click on the 3 dashes in the upper left corner (Menu). Select "your places" from the list. Under the point "your places" select "Maps". Click on the point "Create Map" at the very bottom. Then use the import point to upload your KML file.
+Open your browser and navigate to Google Maps.Next, Click on the 3 dashes in the upper left corner (Menu). Select "your places" from the list. Under the point "your places" select "Maps". Click on the point "Create Map" at the very bottom. Then use the import point to upload your KML file.
