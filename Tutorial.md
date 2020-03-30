@@ -304,6 +304,16 @@ Now write a function that extracts the IP address from each line and stores it i
 
 A free database is used in this task. It is not 100% accurate and does not always find the corresponding country or city. However, the longitude and latitude are always found. If, the city or country is not found the value of the variable will be set to "None"
 
+It is possible that for a certain IP no infromation is found in the database. (This happens for 2 IP Addresses in our log file). In this case, the GeoIP2 will throw an error. This snippet shows which error is thrown and how it is catched:
+
+```python
+from geoip2.errors import AddressNotFoundError
+try :
+    response = reader.city(ip)
+except AddressNotFoundError:
+  #do something
+```
+
 ### Step 2:
 
 #### Theory DNS-Look up
@@ -355,6 +365,11 @@ A resulting Log entry in the normalized File should look like this:
 
 XbuV-n8AAAEAABAxX@oAAABF 114.5.212.30 - - [01/Nov/2019:03:18:38 +0100] "GET /misc/js/hllogin-o.js HTTP/1.1" 200 817|GET /misc/js/hllogin-o.js HTTP/1.1|Host:www.hacking-lab.com|Connection:keep-alive|User-Agent:Mozilla/5.0 (Linux; U; Android 8.1.0; en-US; SM-G610F Build/M1AJQ) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/12.13.4.1214 Mobile Safari/537.36|Accept:*/*|Referer:https%3a//www.hacking-lab.com/user/login/|Accept-Encoding:gzip, deflate, br|Accept-Language:id,en-US;q=0.8|Cookie:HLSSL=3FpK/ZpvSNrqdjUvxDo861sOu5V5jEJT; JSESSIONID=4A2C41D73A7BA40ADC9D1E75B24D82E5|DNS:114-5-212-30.resources.indosat.com| Country: Indonesia|City: Jakarta|Latitude:-6.1741|Longitude:106.8296
 
+Keep in mind that we have explained in Step 1 how to catch the AddressNotFound Exception from GeoIP2. If this exception occures write the fhe following sentence "|No Geo Data found" instead of the geo information. This is an Example for such an log entry:
+
+XgbDCH8AAAEAAEzwAgoAAADF 151.217.218.42 - - [28/Dec/2019:03:50:48 +0100] "GET / HTTP/1.1" 302 222|GET / HTTP/1.1|Host:www.hacking-lab.com|User-Agent:Mozilla/5.0 (X11; Linux x86_64; rv%3a60.0) Gecko/20100101 Firefox/60.0|Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8|Accept-Language:en-US,en;q=0.5|Accept-Encoding:gzip, deflate, br|Connection:keep-alive|Upgrade-Insecure-Requests:1|No Geo Data found
+
+
 In the normalized file there is again a large amount of data. It is best to copy some lines into a test file to see if the solution works. 
 
 ## Visualizing log files on Google Maps
@@ -385,7 +400,7 @@ This code snippet shows how simplekml is used to create a KML file:
 
 ```python
 kml = simplekml.Kml() #creates the kml file
-kml.newpoint(name=ip, coords=[(longitude, latitude)]).description = line  #create a point with the ip as name and log entry as description
+kml.newpoint(name=ip, coords=[(longitude, latitude)]).description = "Example"  #create a point with the ip as name and log entry as description
 kml.save('../locations.kml') #save the kml file with the specified name
 
 ```
@@ -404,9 +419,35 @@ Write a function that extracts the required data from the .normalized log File. 
 
 ### Step 2
 
-Now rewrite the function from Step 1 to create a KML file with the following information per point:
-* IP address as name
+Our KMl file should have the following information per point:
+* IP address and how many times accessed as name
 * Entire log entry as description
+
+In the KML file each IP address should only appear once, but in addition it should be shown how many times it has been accessed from this IP address.
+
+The string for the name of the point should look like this : "192.1.1.1 (127)" This means the IP 192.1.1.1 tried to access 127 times. The description should only contain the log entry of the first IP found.
+
+This problem can be solved with dictionaries. A Dictionary contains Key/Value pairs. Each key is separated from its value by a colon (:), the items are separated by commas, and the whole thing is enclosed in curly braces. An empty dictionary without any items is written with just two curly braces, like this: {}.
+
+Keys are unique within a dictionary while values may not be. The values of a dictionary can be of any type, but the keys must be of an immutable data type such as strings, numbers, or tuples.
+
+Example:
+
+```python
+dict = {'Name': 'Simon', 'Age': 7}
+print ("dict['']: ", dict['Name'])
+print ("dict['Age']: ", dict['Age'])
+```
+
+which gives the following result:
+
+```python
+dict['Name']:  Zara
+dict['Age']:  7
+```
+To solve our problem, we can use two dictionaries. In both dictionaries you store the IP address as a key. The first dictionary contains of: Key=IP Adress Value=Number of times the IP tried to acces and the second contains of: Key=IP Address Value=False. The value of the second dictionary is set to True when you created a point for it. This prevents the KML file from having duplicated IP addresses. 
+
+Firstly, open the normalized.log file iterate over it and create the two dictionaries. Secondy, open the normalized.log file iterate over it and create the KML file. 
 
 ### Step 3
 
