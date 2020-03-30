@@ -434,7 +434,7 @@ Keys are unique within a dictionary while values may not be. The values of a dic
 Example:
 
 ```python
-dict = {'Name': 'Simon', 'Age': 7}
+dict = {'Name': 'Simon', 'Age': 10}
 print ("dict['']: ", dict['Name'])
 print ("dict['Age']: ", dict['Age'])
 ```
@@ -442,8 +442,8 @@ print ("dict['Age']: ", dict['Age'])
 which gives the following result:
 
 ```python
-dict['Name']:  Zara
-dict['Age']:  7
+dict['Name']:  Simon
+dict['Age']:  10
 ```
 To solve our problem, we can use two dictionaries. In both dictionaries you store the IP address as a key. The first dictionary contains of: Key=IP Adress Value=Number of times the IP tried to acces and the second contains of: Key=IP Address Value=False. The value of the second dictionary is set to True when you created a point for it. This prevents the KML file from having duplicated IP addresses. 
 
