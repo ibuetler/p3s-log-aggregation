@@ -195,7 +195,7 @@ The following code snippet opens a file with the keyword with and iterates over 
 
 with open("yourfile.txt", "w") as f: 
 
-    for line in lines: 
+    for lines in f: 
 
             //do something 
 
