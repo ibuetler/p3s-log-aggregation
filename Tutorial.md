@@ -445,7 +445,9 @@ which gives the following result:
 dict['Name']:  Simon
 dict['Age']:  10
 ```
-To solve our problem, we can use two dictionaries. In both dictionaries you store the IP address as a key. The first dictionary contains of: Key=IP Adress Value=Number of times the IP tried to acces and the second contains of: Key=IP Address Value=False. The value of the second dictionary is set to True when you created a point for it. This prevents the KML file from having duplicated IP addresses. 
+To solve our problem, we can use two dictionaries. In both dictionaries you store the IP address as a key. The first dictionary contains of: 
+Key=IP-Adress / Value= Number of times the IP tried to acces and 
+The second dictionary contains of: Key=IP-Address / Value=False. The value of the second dictionary is set to True when a point was created. This prevents the KML file from having duplicated IP addresses. 
 
 Firstly, open the normalized.log file iterate over it and create the two dictionaries. Secondy, open the normalized.log file iterate over it and create the KML file. 
 
