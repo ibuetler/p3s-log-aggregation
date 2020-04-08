@@ -236,7 +236,6 @@ Hint: Please have a closer look at the following string manipulation library
 
 You will need this to delete the leading + from the forensicID and delete the line with the leading -forensicID.
 
-
 ### Step 3
 
 
@@ -456,3 +455,29 @@ Firstly, open the normalized.log file iterate over it and create the two diction
 The created KML File can be uploaded in Google Maps in the following way:
 
 Open your browser and navigate to Google Maps.Next, Click on the 3 dashes in the upper left corner (Menu). Select "your places" from the list. Under the point "your places" select "Maps". Click on the point "Create Map" at the very bottom. Then use the import point to upload your KML file.
+
+## Advanced Task
+
+This task is optional and suitable for advanced users. 
+
+The goal is to create the KML file with more informative data than in the previous task. Each item in the KML file should contain the following information:
+
+```
+IP (Acces attempts)
+- OS system
+- Browser
+- Continent
+- Country
+- First Log: Timestamp
+- Last Log: Timestamp
+- List of Count HTTP Methods
+- List of Count Statuscodes
+
+
+
+
+
+
+
+
+
