@@ -1,8 +1,4 @@
- 
-
 # Tutorial Log Aggregation with Python3 
-
-  
 
 ## Introduction 
 
@@ -12,17 +8,17 @@ This challenge is about manipulating (log) files with Python3. Learn how to corr
 ### Learn how to ...
 
 * merge and correlate the two given log files into a single file
-
 * enrich the resulting log file by performing DNS lookups
-
 * enrich the resulting log file by adding GEO location information (to ip address)
-
 * visualize the resuluting log file on Google Maps.
 
+### Goal
+* Task 1: Logfile Normalization
+* Task 2: Data Enrichment
+* Task 3: Visualization on Google Maps
 
-## Preperation
-
-### Step1
+## Preparation
+### Step 1
 Please download the webserver-logs.zip from RESOURCES to /home/hacker/Downloads
 
 LOG
@@ -61,8 +57,7 @@ drwxr-xr-x 3 hacker hacker     4096 Mar 20 11:24 ..
 
 you should have your access.log and forensic.log available.
 
-### Step2
-
+### Step 2
 Please have a closer look at both log files. May you want to see the last 5 log entries of both log files using the following command tail -5 access.log and tail -5 forensic.log
 
 LOG
@@ -92,8 +87,7 @@ Xgq6KX8AAAEAAH91usgAAACS 212.254.246.103 - - [31/Dec/2019:04:02:01 +0100] "GET /
 
 in the access.log, every log entry is on one single line. In the forensic.log you will find log entries in between the forensicID. Such a log entry starts with the +<number> and closes with -<number>
  
-### Step3
-
+### Step 3
 We have a pipenv python3 skeleton for you. please run the following commands (e.g. Hacking-Lab LiveCD) and setup your python3 environment.
 
 ```
@@ -150,10 +144,8 @@ root@hlkali:/opt/git/p3s-log-aggregation# . /root/.local/share/virtualenvs/p3s-l
 
 you should now have your python3 environment ready for this exercise.
 
-## Log File Normalization
-
+## Task 1: Log File Normalization
 ### Step1
-
 First, we need to merge and normalize the two given log files.
 
 The access.log consists of the following information
@@ -173,7 +165,6 @@ It is importance to notice that even the structure of the GET Requests can be di
  
 
 ### Step 2 
-
 The original forensic.log is not very easy to merge and correlate with the access.log. As the forensic.log log entries announce a new log entry with the +forensicID and closing the log entry with a -forensicID, it is preferred to convert the forensic.log into a new log where every log entry is on a single line. This is recommended, because the access.log contains one log entry per line.
 
 A log entry in the forensic.log looks like this:
@@ -186,7 +177,6 @@ It should look like this, after the first normalization:
 XbuUln8AAAEAABEHgLsAAACR|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
 
 ### Theory Python 3 File Manipulation
-  
 In Python3 it is best to open a file with the "with" keyword. It is used in exception handling to make the code cleaner and much more readable. It simplifies the management of common resources like file streams. There is for example no need to use the close function, because the "with" keyword will take care of.
 
 The following code snippet opens a file with the keyword with and iterates over the lines:
@@ -237,8 +227,6 @@ Hint: Please have a closer look at the following string manipulation library
 You will need this to delete the leading + from the forensicID and delete the line with the leading -forensicID.
 
 ### Step 3
-
-
 Please merge the optimized forensic.log file with access.log file. Compare the forensicID's and if they match write both lines into a new normalized.log file.
 
 Write first the line from the access.log file with separating it with the '|' chracter at the end. This will ensure that you have a common delimiter over the whole file which will make the next steps easier.
@@ -250,10 +238,8 @@ XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST 
 Hint: The forensic.log and access.log have many different entries. Comparing a line with each line of another file will take a lot of time. Maybe copy two or three lines in a different file to see if your solution works.
   
 
-## Log File Data Enrichment
-
+## Task 2: Log File Data Enrichment
 ### Step 1
-
 After we have merged the forensic.log with the access.log in the previous step, we now want to enrich the ip address in the log with it's unique geo location. Thus, we need to lookup the geo location per ip address. We will use the library geoip2 for this task. The lookup could be done against an online resource - but for the sake of this tutorial, we will lookup against a local copy of the GeoIP database.
 
 * Country
@@ -264,7 +250,6 @@ After we have merged the forensic.log with the access.log in the previous step, 
   
 
 ### Theory GeoIP Lookup
-
 Assuming you have previously download the GeoLite database, you can load the database with the following code:
 
 ```python 
@@ -300,7 +285,6 @@ The Parameter 0 simply specifies that the whole string should be returned as a r
 Now write a function that extracts the IP address from each line and stores it in a variable. Additionally, all geo data should be stored in variables. Print the solution on the console to see if it worked. This function will be extended in the next steps. 
 
 ### Important:
-
 A free database is used in this task. It is not 100% accurate and does not always find the corresponding country or city. However, the longitude and latitude are always found. If, the city or country is not found the value of the variable will be set to "None"
 
 It is possible that for a certain IP no infromation is found in the database. (This happens for 2 IP Addresses in our log file). In this case, the GeoIP2 will throw an error. This snippet shows which error is thrown and how it is catched:
@@ -371,7 +355,7 @@ XgbDCH8AAAEAAEzwAgoAAADF 151.217.218.42 - - [28/Dec/2019:03:50:48 +0100] "GET / 
 
 In the normalized file there is again a large amount of data. It is best to copy some lines into a test file to see if the solution works. 
 
-## Visualizing log files on Google Maps
+## Task 3: Visualizing log files on Google Maps
 
 ### Theory KML-Files
 
@@ -472,12 +456,3 @@ IP (Acces attempts)
 - Last Log: Timestamp
 - List of Count HTTP Methods
 - List of Count Statuscodes
-
-
-
-
-
-
-
-
-
