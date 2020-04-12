@@ -1,6 +1,6 @@
 # Tutorial Log Aggregation with Python3 
 ## Introduction 
-This programming exercise is about manipulating (log) files with Python3. Learn how to correlate, merge, enrich and visualize the given web server log files. 
+This programming exercise is about analyzing given web server log files with Python3. 
 
 
 ### Learn how to ...
@@ -28,11 +28,9 @@ drwxr-xr-x  2 hacker hacker    4096 Mar 20 11:24 .
 drwxr-xr-x 35 hacker hacker    4096 Mar 20 09:44 ..
 -rw-r--r--  1 hacker hacker 3776821 Mar 20 11:24 webserver-logs.zip
 
-
 ╭─root@hlkali  /home/hacker/Downloads  
 ╰─$ md5sum webserver-logs.zip 
 d479b45c92411a6853d1e83358e0b5bc  webserver-logs.zip
-
 
 ╭─root@hlkali  /home/hacker/Downloads  
 ╰─$ unzip webserver-logs.zip 
@@ -42,19 +40,11 @@ Archive:  webserver-logs.zip
   inflating: webserver-logs/forensic.log  
 ╭─root@hlkali  /home/hacker/Downloads  
 
-
-╰─$ ls -al webserver-logs
-total 55448
-drwxr-xr-x 2 root   root       4096 Mar 20  2020 .
-drwxr-xr-x 3 hacker hacker     4096 Mar 20 11:24 ..
--rw-r--r-- 1 root   root   11062573 Mar  4 13:26 access.log
--rw-r--r-- 1 root   root   45706362 Mar  4 13:24 forensic.log
-
 ```
 
 
 ### Step 2: Checking Log Files by Hand
-Please have a closer look at both log files. May you want to see the last 5 log entries of both log files using the following command tail -5 access.log and tail -5 forensic.log
+Please have a closer look at the `access.log` and `forensic.log`. May you want to see the last 5 log entries of both log files using the following command `tail -5 access.log` and `tail -5 forensic.log`
 
 LOG
 
@@ -149,7 +139,7 @@ The access.log consists of the following information
 * `URL`
 
 
-`example: XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST /cron/vmcontrol.html?job=updateList HTTP/1.1" 200 -`
+`XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST /cron/vmcontrol.html?job=updateList HTTP/1.1" 200 -`
 
 The forensic.log is more comprehensive and complex. There are different formats for the POST and GET Method. The log format of a POST entry contains: ID, Method, Accept-Encoding, Content-Length, Host, Content-Type, Connection, User-Agent whereas the log format of a GET consists of ID, Method, Host, Connection, Upgrade-Insecure-Request, User-Agent, Accept, Referer, Accept-Encoding, Accept-Language.
 
@@ -181,11 +171,8 @@ The following code snippet opens a file with the keyword with and iterates over 
 ```python 
 
 with open("yourfile.txt", "w") as f: 
-
     for lines in f: 
-
             //do something 
-
 ``` 
 
 The open Function takes two parameter: the first parameter is the path to the file and the second parameter in which mode the file should be opend. There exists multiple mode but the most important are: 
@@ -234,7 +221,10 @@ A resulting log entry should look like this:
 XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST /cron/vmcontrol.html?job=updateList HTTP/1.1" 200 -|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
 ```
 
-Hint: The forensic.log and access.log have many different entries. Comparing a line with each line of another file will take a lot of time. Maybe copy two or three lines in a different file to see if your solution works.
+**Hint**: The forensic.log and access.log have many different entries. Comparing a line with each line of another file will take a lot of time. Maybe copy two or three lines in a different file to see if your solution works.
+
+### Result Task 1
+* You should have a `normalized.log` out of `access.log` and `forensic.log`
   
 
 ## Task 2: Log File Data Enrichment
@@ -248,7 +238,7 @@ After we have merged the forensic.log with the access.log in the previous step, 
 * `DNS name`
   
 
-### Theory GeoIP Lookup
+#### Theory GeoIP Lookup
 Assuming you have previously download the GeoLite database, you can load the database with the following code:
 
 ```python 
@@ -318,7 +308,6 @@ The Indexing with [0] is used because the method returns a tuple with: Host Name
 Extend the Function from step 1 with querying the DNS Name and print the result on the console to see if it works.
 
 ### Step 3
-
 Now the normalized log file needs to be extended with the queried data. To achieve this as easy as possible, we use the in_place library. It is not possible to safely write to a file and read it at the same time. Any change you make could overwrite the content that has not yet been read. To do it safely the file must be read into a buffer, updating any lines as required, and then re-write the file.
 
 The in_Place Libary will take care of the buffering and therefore makes the coding much easier. The following code illustrates how to use the library:
@@ -356,6 +345,10 @@ XgbDCH8AAAEAAEzwAgoAAADF 151.217.218.42 - - [28/Dec/2019:03:50:48 +0100] "GET / 
 
 In the normalized file there is again a large amount of data. It is best to copy some lines into a test file to see if the solution works. 
 
+### Result Task 2
+* You should have an `enrichment.log` out of `normalized.log`
+
+
 ## Task 3: Visualizing log files on Google Maps
 ### Theory KML-Files
 
@@ -389,12 +382,11 @@ kml.save('../locations.kml') #save the kml file with the specified name
 ```
 
 ### Step 1
-
 To solve the task, the following data must be extracted from the normalized.log file:
 
-* IP address
-* Longitude
-* Latitude
+* `IP address`
+* `Longitude`
+* `Latitude`
 
 For the IP Address the Regex Pattern from Step1 of the Log File Data Enrichment subtask can be used. If, the Log entry of the normalized.log has the format showed in Step 3 of the previous subtask, it is best to extract the latitude with a regex pattern but for the longitude simply the partition string function can be used.
 
@@ -438,10 +430,20 @@ The created KML File can be uploaded in Google Maps in the following way:
 
 Open your browser and navigate to Google Maps.Next, Click on the 3 dashes in the upper left corner (Menu). Select "your places" from the list. Under the point "your places" select "Maps". Click on the point "Create Map" at the very bottom. Then use the import point to upload your KML file.
 
-## Advanced Task
-This task is optional and suitable for advanced users. 
+### Result Task 3
+* You should have a `normalized.kml` out of `normalized.log` 
 
-The goal is to create the KML file with more informative data than in the previous task. Each item in the KML file should contain the following information:
+
+## Conclusion - Task1, Task2, Task3
+After following this tutorial, you should have a python program that is
+
+* Task 1: normalizing the `access.log` and `forensic.log` into a new `normalized.log`
+* Task 2: enriching the `normalized.log` with DNS and GeoIP information into the `enrichment.log`
+* Task 3: visualizing the `enrichment.kml` on Google Maps. 
+
+
+## Optional Task 4: Google Maps Optimization
+This task is optional and suitable for advanced users. The goal is to create the KML file with more informative data than in the previous task. Each item in the KML file should contain the following information:
 
 ```
 IP (Acces attempts)
