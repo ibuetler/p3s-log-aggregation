@@ -1,13 +1,10 @@
 # Tutorial Log Aggregation with Python3 
-
 ## Introduction 
-
-This challenge is about manipulating (log) files with Python3. Learn how to correlate, merge, enrich and visualize with Python3. You will get two files (see picture below)
+This programming exercise is about manipulating (log) files with Python3. Learn how to correlate, merge, enrich and visualize the given web server log files. 
 
 
 ### Learn how to ...
-
-* merge and correlate the two given log files into a single file
+* merge and correlate the two given web server log files into a single file
 * enrich the resulting log file by performing DNS lookups
 * enrich the resulting log file by adding GEO location information (to ip address)
 * visualize the resuluting log file on Google Maps.
@@ -18,8 +15,8 @@ This challenge is about manipulating (log) files with Python3. Learn how to corr
 * Task 3: Visualization on Google Maps
 
 ## Preparation
-### Step 1
-Please download the webserver-logs.zip from RESOURCES to /home/hacker/Downloads
+### Step 1: Download Logs
+Please download and unzip the webserver-logs.zip from `RESOURCES` to /home/hacker/Downloads
 
 LOG
 
@@ -55,16 +52,15 @@ drwxr-xr-x 3 hacker hacker     4096 Mar 20 11:24 ..
 
 ```
 
-you should have your access.log and forensic.log available.
 
-### Step 2
+### Step 2: Checking Log Files by Hand
 Please have a closer look at both log files. May you want to see the last 5 log entries of both log files using the following command tail -5 access.log and tail -5 forensic.log
 
 LOG
 
 ```
 ╭─root@hlkali  /home/hacker/Downloads  
-╰─$ cd /home/hacker/Downloads/webserver-logs                                                                            1 ↵
+╰─$ cd /home/hacker/Downloads/webserver-logs
 
 
 ╭─root@hlkali  /home/hacker/Downloads/webserver-logs  
@@ -87,8 +83,8 @@ Xgq6KX8AAAEAAH91usgAAACS 212.254.246.103 - - [31/Dec/2019:04:02:01 +0100] "GET /
 
 in the access.log, every log entry is on one single line. In the forensic.log you will find log entries in between the forensicID. Such a log entry starts with the +<number> and closes with -<number>
  
-### Step 3
-We have a pipenv python3 skeleton for you. please run the following commands (e.g. Hacking-Lab LiveCD) and setup your python3 environment.
+### Step 3: Create your Python3 Workspace using pipenv
+Please run the following commands (e.g. Hacking-Lab LiveCD) to setup your python3 environment using pipenv. 
 
 ```
 mkdir -p /opt/git
@@ -105,10 +101,8 @@ LOG
 ╭─root@hlkali  /home/hacker/Downloads  
 ╰─$ mkdir -p /opt/git                                            
 
-
 ╭─root@hlkali  /opt/git  
 ╰─$ cd /opt/git 
-
 
 ╭─root@hlkali  /opt/git  
 ╰─$ git clone https://github.com/ibuetler/p3s-log-aggregation.git
@@ -119,10 +113,8 @@ remote: Compressing objects: 100% (47/47), done.
 remote: Total 50 (delta 13), reused 0 (delta 0), pack-reused 0
 Unpacking objects: 100% (50/50), 14.77 KiB | 540.00 KiB/s, done.
 
-
 ╭─root@hlkali  /opt/git  
 ╰─$ cd p3s-log-aggregation 
-
 
 ╭─root@hlkali  /opt/git/p3s-log-aggregation  ‹master› 
 ╰─$ pipenv shell
@@ -142,7 +134,7 @@ root@hlkali:/opt/git/p3s-log-aggregation# . /root/.local/share/virtualenvs/p3s-l
 
 ```
 
-you should now have your python3 environment ready for this exercise.
+you should now have your python3 software project environment ready for this exercise.
 
 ## Task 1: Log File Normalization
 ### Step1
@@ -150,13 +142,14 @@ First, we need to merge and normalize the two given log files.
 
 The access.log consists of the following information
 
-* ID
-* IP
-* timestamp
-* HTTP Method (POST or GET)
-* URL
+* `ID`
+* `IP`
+* `timestamp`
+* `HTTP Method (POST or GET)`
+* `URL`
 
-example: XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST /cron/vmcontrol.html?job=updateList HTTP/1.1" 200 -
+
+`example: XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST /cron/vmcontrol.html?job=updateList HTTP/1.1" 200 -`
 
 The forensic.log is more comprehensive and complex. There are different formats for the POST and GET Method. The log format of a POST entry contains: ID, Method, Accept-Encoding, Content-Length, Host, Content-Type, Connection, User-Agent whereas the log format of a GET consists of ID, Method, Host, Connection, Upgrade-Insecure-Request, User-Agent, Accept, Referer, Accept-Encoding, Accept-Language.
 
@@ -169,14 +162,18 @@ The original forensic.log is not very easy to merge and correlate with the acces
 
 A log entry in the forensic.log looks like this:
 
+```
 +XbuUln8AAAEAABEHgLsAAACR|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
 -XbuUln8AAAEAABEHgLsAAACR
+```
 
 It should look like this, after the first normalization:
 
+```
 XbuUln8AAAEAABEHgLsAAACR|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
+```
 
-### Theory Python 3 File Manipulation
+### Theory: File Manipulation with Python3
 In Python3 it is best to open a file with the "with" keyword. It is used in exception handling to make the code cleaner and much more readable. It simplifies the management of common resources like file streams. There is for example no need to use the close function, because the "with" keyword will take care of.
 
 The following code snippet opens a file with the keyword with and iterates over the lines:
@@ -233,7 +230,9 @@ Write first the line from the access.log file with separating it with the '|' ch
 
 A resulting log entry should look like this:
 
+```
 XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST /cron/vmcontrol.html?job=updateList HTTP/1.1" 200 -|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accept-Encoding:identity|Content-Length:1899|Host:www.hacking-lab.com|Content-Type:application/x-www-form-urlencoded|Connection:close|User-Agent:Python-urllib/2.7
+```
 
 Hint: The forensic.log and access.log have many different entries. Comparing a line with each line of another file will take a lot of time. Maybe copy two or three lines in a different file to see if your solution works.
   
@@ -242,11 +241,11 @@ Hint: The forensic.log and access.log have many different entries. Comparing a l
 ### Step 1
 After we have merged the forensic.log with the access.log in the previous step, we now want to enrich the ip address in the log with it's unique geo location. Thus, we need to lookup the geo location per ip address. We will use the library geoip2 for this task. The lookup could be done against an online resource - but for the sake of this tutorial, we will lookup against a local copy of the GeoIP database.
 
-* Country
-* City
-* latitude
-* longitude
-* DNS name
+* `Country`
+* `City`
+* `latitude`
+* `longitude`
+* `DNS name`
   
 
 ### Theory GeoIP Lookup
@@ -284,8 +283,8 @@ The Parameter 0 simply specifies that the whole string should be returned as a r
 
 Now write a function that extracts the IP address from each line and stores it in a variable. Additionally, all geo data should be stored in variables. Print the solution on the console to see if it worked. This function will be extended in the next steps. 
 
-### Important:
-A free database is used in this task. It is not 100% accurate and does not always find the corresponding country or city. However, the longitude and latitude are always found. If, the city or country is not found the value of the variable will be set to "None"
+### Limitations
+The free GeoIP database is not 100% accurate and does not always find the corresponding country or city. However, the longitude and latitude are always found. If, the city or country is not found the value of the variable will be set to "None"
 
 It is possible that for a certain IP no infromation is found in the database. (This happens for 2 IP Addresses in our log file). In this case, the GeoIP2 will throw an error. This snippet shows which error is thrown and how it is catched:
 
@@ -298,7 +297,6 @@ except AddressNotFoundError:
 ```
 
 ### Step 2:
-
 #### Theory DNS-Look up
 
 The function of Step 1 will now be extended by querying the associated DNS name for the IP address and saving in a variable.
@@ -346,17 +344,19 @@ Since, it is possible that the country, city and DNS variable can be NONE check 
 ```
 A resulting Log entry in the normalized File should look like this:
 
+```
 XbuV-n8AAAEAABAxX@oAAABF 114.5.212.30 - - [01/Nov/2019:03:18:38 +0100] "GET /misc/js/hllogin-o.js HTTP/1.1" 200 817|GET /misc/js/hllogin-o.js HTTP/1.1|Host:www.hacking-lab.com|Connection:keep-alive|User-Agent:Mozilla/5.0 (Linux; U; Android 8.1.0; en-US; SM-G610F Build/M1AJQ) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/12.13.4.1214 Mobile Safari/537.36|Accept:*/*|Referer:https%3a//www.hacking-lab.com/user/login/|Accept-Encoding:gzip, deflate, br|Accept-Language:id,en-US;q=0.8|Cookie:HLSSL=3FpK/ZpvSNrqdjUvxDo861sOu5V5jEJT; JSESSIONID=4A2C41D73A7BA40ADC9D1E75B24D82E5|DNS:114-5-212-30.resources.indosat.com| Country: Indonesia|City: Jakarta|Latitude:-6.1741|Longitude:106.8296
+```
 
 Keep in mind that we have explained in Step 1 how to catch the AddressNotFound Exception from GeoIP2. If this exception occures write the fhe following sentence "|No Geo Data found" instead of the geo information. This is an Example for such an log entry:
 
+```
 XgbDCH8AAAEAAEzwAgoAAADF 151.217.218.42 - - [28/Dec/2019:03:50:48 +0100] "GET / HTTP/1.1" 302 222|GET / HTTP/1.1|Host:www.hacking-lab.com|User-Agent:Mozilla/5.0 (X11; Linux x86_64; rv%3a60.0) Gecko/20100101 Firefox/60.0|Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8|Accept-Language:en-US,en;q=0.5|Accept-Encoding:gzip, deflate, br|Connection:keep-alive|Upgrade-Insecure-Requests:1|No Geo Data found
-
+```
 
 In the normalized file there is again a large amount of data. It is best to copy some lines into a test file to see if the solution works. 
 
 ## Task 3: Visualizing log files on Google Maps
-
 ### Theory KML-Files
 
 In Google Maps or Google Earth data can be displayed with KML-Files. KML uses a tag-based structure with nested elements and attributes and is based on the XML standard.
@@ -401,7 +401,6 @@ For the IP Address the Regex Pattern from Step1 of the Log File Data Enrichment 
 Write a function that extracts the required data from the .normalized log File. Output the data to the console to see if everything worked.
 
 ### Step 2
-
 Our KMl file should have the following information per point:
 * IP address and how many times accessed as name
 * Entire log entry as description
@@ -435,13 +434,11 @@ The second dictionary contains of: Key=IP-Address / Value=False. The value of th
 Firstly, open the normalized.log file iterate over it and create the two dictionaries. Secondy, open the normalized.log file iterate over it and create the KML file. 
 
 ### Step 3
-
 The created KML File can be uploaded in Google Maps in the following way:
 
 Open your browser and navigate to Google Maps.Next, Click on the 3 dashes in the upper left corner (Menu). Select "your places" from the list. Under the point "your places" select "Maps". Click on the point "Create Map" at the very bottom. Then use the import point to upload your KML file.
 
 ## Advanced Task
-
 This task is optional and suitable for advanced users. 
 
 The goal is to create the KML file with more informative data than in the previous task. Each item in the KML file should contain the following information:
@@ -456,3 +453,4 @@ IP (Acces attempts)
 - Last Log: Timestamp
 - List of Count HTTP Methods
 - List of Count Statuscodes
+```
