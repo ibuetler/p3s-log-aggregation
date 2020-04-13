@@ -1,6 +1,16 @@
 # Tutorial Log Aggregation with Python3 
 ## Introduction 
-This programming exercise is about analyzing given web server log files with Python3. 
+This programming exercise is about analyzing, merging and enriching two given apache web server log files with Python3. 
+
+```
++---------------+
+| access.log    |
++---------------+     +----------------+     +----------------+     +----------------+
+                +---->+ normalized.log +---->+ enrichment.log +---->+ enrichment.kml |
++---------------+     +----------------+     +----------------+     +----------------+
+| forensic.log  |
++---------------+
+```
 
 
 ### Learn how to ...
