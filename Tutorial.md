@@ -512,5 +512,21 @@ You can use a regex pattern to search for the word City or Country respectively,
 
 ### Http Method with the number of their occurrence
 
+In our point in the KML file we want to show how often an IP address has executed which type of HTTP method.
 
+The following three methods occur in our log file: GET, HEAD and POST. These can also be extracted very easily with Regex. Each of these method types occurs exactly once for each log entry in the structure "\GET...". So you can create three patterns in this form:
 
+```python
+pattern_GET = re.compile('\"GET')
+pattern_HEAD = re.compile('\"HEAD')
+pattern_POST = re.compile('\"POST')
+```
+The best way to solve this is to create a class with three data fields named GET,HEAD and POST and initialize them with 0 as follows:
+
+```python
+class Http_Method:
+  GET = 0
+  POST = 0
+  HEAD = 0
+```
+Now you can create a method that returns a dictionary with the IP address as the key and an object from the above class as the value. You iterate over the file and whenever a GET, POST or HEAD appears the corresponding value is increased by 1.
