@@ -503,3 +503,14 @@ dict_min_timestamp[ip] = result.strftime('%d/%b/%Y:%H:%M:%S %z')
 ```
 Now the knowledge should be available to create two functions. One that returns a dictionary with the smallest timestamp for each IP address and the other returns a dictionary with the largest timestamp for each IP address.
 
+### Find City and Country
+
+These two entries can be found very quickly. In our normalized log file we have entered the countries and cities as follows:
+|Country: ""|
+| City: ""|
+You can use a regex pattern to search for the word City or Country respectively, followed by a space and then any repetition of letters. But you have to take into account that countries or cities can have spaces in themselves. (e.g. United States). Also not every IP address has a country or city entry. You can now create 2 functions again: One which returns a dictionary with IP and country and one with IP and city.
+
+### Http Method with the number of their occurrence
+
+
+
