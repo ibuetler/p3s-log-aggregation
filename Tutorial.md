@@ -466,3 +466,40 @@ IP (Acces attempts)
 - List of Count HTTP Methods
 - List of Count Statuscodes
 ```
+For Example a resulting Google Maps Point could look like this:
+
+
+Following is an explanation of how to extract each entry from the log file. In general you can divide this into several methods, which always return a dictionary with the key as IP address and the value is the searched entry from the log file.
+
+### Find Timestamps
+
+Each timestamp in the log file has the following structure:
+```
+[01/Nov/2019:03:26:20 +0100]
+```
+First comes the day then the month and year. All separated by a "/". Afterwards, hours, minutes and seconds separated by a ":". The last entry is the timezone which always contians of 4 digits.
+
+To get the timestamps it is best to use regex as this is a very unique structure. Then you create two methods: one returns a dicitionary with IP as key and min timestamp as value. The second method also returns a dictionary but with the max timestamp.
+
+To be able to compare the time stamps, some theory is still needed:
+
+In Python there is a datetime library that creates timestamp objects and makes them comparable. An instance of datetime has a member method called strptime. This method allows to parse a string into a timestamp object. The method takes two parameters, the first is the string to be parsed into a timestamp object and the second is a pattern of how the string is parsed. This example shows how to parse a string in the form of our log file entry into a timestamp object and find the smaller of two timestamps:
+
+```python
+from datetime import datetime
+
+timestamp_obj_1 = datetime.strptime(timestamp, '%d/%b/%Y:%H:%M:%S %z')
+timestamp_obj_2 = datetime.strptime(dict_min_timestamp[ip], '%d/%b/%Y:%H:%M:%S %z')
+result = min(timestamp_obj_1, timestamp_obj_2)
+```
+If you are interested in how exactly a pattern is created for a timestamp, here is the documentation: https://docs.python.org/3.3/library/datetime.html The meaning of the variables of the pattern can be found at 8.1.8 in the documentation.
+
+Finally, the smaller timestamp can simply be received by the min function since they are now comparable. To find the larger timestamp, simply use the max function instead of min.
+
+Now the result has to be converted back into a string for our kml file. This can be done with the strftime function. This function takes the pattern of the timestamp and converts it into a string. This example shows how a timestamp is converted into a string and stored in the dictionary:
+
+```python
+dict_min_timestamp[ip] = result.strftime('%d/%b/%Y:%H:%M:%S %z')
+```
+Now the knowledge should be available to create two functions. One that returns a dictionary with the smallest timestamp for each IP address and the other returns a dictionary with the largest timestamp for each IP address.
+
