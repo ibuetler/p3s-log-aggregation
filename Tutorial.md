@@ -601,3 +601,9 @@ Keep in mind that there is also not for every IP-Address an OS in the log file. 
 
 </p>
 </details>
+
+Afterwards, if you have a pattern, you can proceed as usual and create a function that returns a dictionary with the IP address as key and the OS as value.
+
+
+The last step is to create a function that calls all the above functions and stores the corresponding dictionaries in variables. Then you iterate over all IP addresses and create, as in the previous step, the KML file.
+
