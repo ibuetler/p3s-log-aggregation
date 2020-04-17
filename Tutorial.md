@@ -530,3 +530,29 @@ class Http_Method:
   HEAD = 0
 ```
 Now you can create a method that returns a dictionary with the IP address as the key and an object from the above class as the value. You iterate over the file and whenever a GET, POST or HEAD appears the corresponding value is increased by 1.
+
+### Find the browser
+
+The goal is to extract the browser used for each IP address from the log file. Again this can be achieved with Regex. If you take a closer look at the logfile you will see that the browser always follows after "User-Agent:":
+
+```
+|User-Agent:Mozilla/5.0 (Linux; Android 5.1; ....
+```
+
+So you can create a regex pattern that first searches for the string "User-Agent:" and then for any character until a space occurs. But you have to take into account that the word user-agent is not always written uniformly. It can appear in the form "User-Agent", "User-agent" and "user-agent", i.e. three variants. Also, not every IP address has a user agent, so keep that in mind.
+
+Again, create a method that returns a dictionary with the IP address as key and the browser as value.
+
+### Find Status Codes with the number of their occurrence
+
+Now we want to find out for each IP address how often which HTTP status codes occurred.
+
+To make this task easier, here is a list of the status codes that appear in the log file:
+* 200
+* 204
+* 206
+* 302
+* 304
+* 400
+* 403
+* 404
