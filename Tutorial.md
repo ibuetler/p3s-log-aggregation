@@ -578,7 +578,7 @@ class Statuscode:
   ```
 Then you create a method that returns a dictionary with the IP address as key and an object of this class as value. You can  now iterate over the file and always increase the appropriate value by 1 when a status code for an IP occurs.
  
- ### find the operating system
+ ### Find the operating system
  
 Finally, we want to know which IP address was used by which operating system. The regex pattern for this task is very complex to create. Basically, the operating systems appear in the log file as follows:
 
