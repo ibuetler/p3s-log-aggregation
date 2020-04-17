@@ -556,3 +556,48 @@ To make this task easier, here is a list of the status codes that appear in the 
 * 400
 * 403
 * 404
+
+The congestion codes appear in the log file, each after a quota mark and a space e.g. " 200
+So it is possible to create a regex pattern for each status code in the following form:
+
+```
+pattern_200 = re.compile('\" 200')
+```
+This task can then be solved in the same way as the task for extracting the Http methods. You can create a class that maps the status codes in the following way:
+
+```
+class Statuscode:
+  C200 = 0
+  C204 = 0
+  C206 = 0
+  C302 = 0
+  C304 = 0
+  C400 = 0
+  C403 = 0
+  C404 = 0
+  ```
+Then you create a method that returns a dictionary with the IP address as key and an object of this class as value. You can  now iterate over the file and always increase the appropriate value by 1 when a status code for an IP occurs.
+ 
+ ### find the operating system
+ 
+Finally, we want to know which IP address was used by which operating system. The regex pattern for this task is very complex to create. Basically, the operating systems appear in the log file as follows:
+
+```
+(Linux; Android 5.1; iris 605 Build/LMY47I; wv)
+```
+Usually you have two brackets around the operating system with an undefined sequence of words separated by ";". The problem is that this is also ambiguous. There are also cases where the OS only appears in the following format:
+
+```
+(x86_64-redhat-linux-gnu)
+```
+Keep in mind that there is also not for every IP-Address an OS in the log file. You can think about a pattern by yourself or you can click below for a solution.
+
+<details><summary>Pattern</summary>
+<p>
+
+```python
+  pattern_os = re.compile("\(Linux[^)]*\)|\(Windows[^)]*\)|\(X11[^)]*\)|\(compatible[^)]*\)|\(Macintosh[^)]*\)|redhat-linux|\(iPhone[^)]*\)|\(Mobile[^)]*\)|pc-linux|\(Android[^)]*\)|\(Spreadtrum[^)]*\)|\(MAUI Runtime[^)]*\)|sogouspider|\(J2ME/MIDP[^)]*\)")
+```
+
+</p>
+</details>
