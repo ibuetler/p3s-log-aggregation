@@ -440,6 +440,10 @@ The created KML File can be uploaded in Google Maps in the following way:
 
 Open your browser and navigate to Google Maps.Next, Click on the 3 dashes in the upper left corner (Menu). Select "your places" from the list. Under the point "your places" select "Maps". Click on the point "Create Map" at the very bottom. Then use the import point to upload your KML file.
 
+Here is how an a point in google maps should look like:
+
+![screenshot](/media/challenge/png/Screen_basic_task.png)
+
 ### Result Task 3
 * You should have a `normalized.kml` out of `normalized.log` 
 
