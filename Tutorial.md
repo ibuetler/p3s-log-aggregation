@@ -468,6 +468,8 @@ IP (Acces attempts)
 ```
 For Example a resulting Google Maps Point could look like this:
 
+![Drag Racing](/media/challenge/png.Screenshot_Log_Task.png)
+
 
 Following is an explanation of how to extract each entry from the log file. In general you can divide this into several methods, which always return a dictionary with the key as IP address and the value is the searched entry from the log file.
 
