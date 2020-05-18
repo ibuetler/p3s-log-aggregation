@@ -17,7 +17,7 @@ This programming exercise is about analyzing, merging and enriching two given ap
 * merge and correlate the two given web server log files into a single file
 * enrich the resulting log file by performing DNS lookups
 * enrich the resulting log file by adding GEO location information (to ip address)
-* visualize the resuluting log file on Google Maps.
+* visualize the resulting log file on Google Maps.
 
 ### Goal
 * Task 1: Logfile Normalization
@@ -84,7 +84,7 @@ Xgq6KX8AAAEAAH91usgAAACS 212.254.246.103 - - [31/Dec/2019:04:02:01 +0100] "GET /
 in the access.log, every log entry is on one single line. In the forensic.log you will find log entries in between the forensicID. Such a log entry starts with the +<number> and closes with -<number>
  
 ### Step 3: Create your Python3 Workspace using pipenv
-Please run the following commands (e.g. Hacking-Lab LiveCD) to setup your python3 environment using pipenv. 
+Please run the following commands (e.g. Hacking-Lab LiveCD) to set up your python3 environment using pipenv. 
 
 ```
 mkdir -p /opt/git
@@ -153,7 +153,7 @@ The access.log consists of the following information
 
 The forensic.log is more comprehensive and complex. There are different formats for the POST and GET Method. The log format of a POST entry contains: ID, Method, Accept-Encoding, Content-Length, Host, Content-Type, Connection, User-Agent whereas the log format of a GET consists of ID, Method, Host, Connection, Upgrade-Insecure-Request, User-Agent, Accept, Referer, Accept-Encoding, Accept-Language.
 
-It is importance to notice that even the structure of the GET Requests can be different but they all will start with the +forensicID of the entry and end with the -forensicID.
+It is important to notice that even the structure of the GET Requests can be different but they all will start with the +forensicID of the entry and end with the -forensicID.
 
  
 
@@ -174,7 +174,7 @@ XbuUln8AAAEAABEHgLsAAACR|POST /cron/vmcontrol.html?job=updateList HTTP/1.1|Accep
 ```
 
 ### Theory: File Manipulation with Python3
-In Python3 it is best to open a file with the "with" keyword. It is used in exception handling to make the code cleaner and much more readable. It simplifies the management of common resources like file streams. There is for example no need to use the close function, because the "with" keyword will take care of.
+In Python3 it is best to open a file with the "with" keyword. It is used in exception handling to make the code cleaner and much more readable. It simplifies the management of common resources like file streams. There is, for example, no need to use the close function, because the "with" keyword will take care of.
 
 The following code snippet opens a file with the keyword with and iterates over the lines:
 
@@ -185,7 +185,7 @@ with open("yourfile.txt", "w") as f:
             //do something 
 ``` 
 
-The open Function takes two parameter: the first parameter is the path to the file and the second parameter in which mode the file should be opend. There exists multiple mode but the most important are: 
+The open Function takes two parameters: the first parameter is the path to the file and the second parameter in which mode the file should be opened. There exists multiple modes but the most important are: 
 
 * r: Opens the file in read-only mode. Starts reading from the beginning of the file and is the default mode for the open() function. 
 
@@ -197,7 +197,7 @@ The open Function takes two parameter: the first parameter is the path to the fi
 
 * a: Opens a file for appending new information to it. The pointer is placed at the end of the file. A new file is created if one with the same name doesn't exist. 
 
-The following code snipet shows how to nest multiple with statements (one file in write mode and one in read mode):
+The following code snippet shows how to nest multiple with statements (one file in write mode and one in read mode):
 
 ```python 
 
@@ -223,7 +223,7 @@ You will need this to delete the leading + from the forensicID and delete the li
 ### Step 3
 Please merge the optimized forensic.log file with access.log file. Compare the forensicID's and if they match write both lines into a new normalized.log file.
 
-Write first the line from the access.log file with separating it with the '|' chracter at the end. This will ensure that you have a common delimiter over the whole file which will make the next steps easier.
+Write first the line from the access.log file with separating it with the '|' character at the end. This will ensure that you have a common delimiter over the whole file which will make the next steps easier.
 
 A resulting log entry should look like this:
 
@@ -239,7 +239,7 @@ XbuUln8AAAEAABEHgLsAAACR 212.254.246.102 - - [01/Nov/2019:03:12:38 +0100] "POST 
 
 ## Task 2: Log File Data Enrichment
 ### Step 1
-After we have merged the forensic.log with the access.log in the previous step, we now want to enrich the ip address in the log with it's unique geo location. Thus, we need to lookup the geo location per ip address. We will use the library geoip2 for this task. The lookup could be done against an online resource - but for the sake of this tutorial, we will lookup against a local copy of the GeoIP database.
+After we have merged the forensic.log with the access.log in the previous step, we now want to enrich the IP address in the log with its unique geolocation. Thus, we need to look up the geolocation per IP address. We will use the library geoip2 for this task. The lookup could be done against an online resource - but for the sake of this tutorial, we will look up against a local copy of the GeoIP database.
 
 * `Country`
 * `City`
@@ -256,7 +256,7 @@ Assuming you have previously download the GeoLite database, you can load the dat
  reader = database.Reader('GeoLite2-City.mmdb')
 ``` 
 
-In the following documentation you will find all the information how to receive all the data you will need for this step:
+In the following documentation you will find all the information about how to receive all the data you will need for this step:
 
 https://geoip2.readthedocs.io/en/latest/
 
@@ -281,12 +281,12 @@ ip = pattern.search("string").group(0)
 ``` 
 The Parameter 0 simply specifies that the whole string should be returned as a result. It is possible to receive subgroups of the matched pattern by entering another number as a parameter but this is not required for this task.
 
-Now write a function that extracts the IP address from each line and stores it in a variable. Additionally, all geo data should be stored in variables. Print the solution on the console to see if it worked. This function will be extended in the next steps. 
+Now write a function that extracts the IP address from each line and stores it in a variable. Additionally, all geodata should be stored in variables. Print the solution on the console to see if it worked. This function will be extended in the next steps. 
 
 ### Limitations
 The free GeoIP database is not 100% accurate and does not always find the corresponding country or city. However, the longitude and latitude are always found. If, the city or country is not found the value of the variable will be set to "None"
 
-It is possible that for a certain IP no infromation is found in the database. (This happens for 2 IP Addresses in our log file). In this case, the GeoIP2 will throw an error. This snippet shows which error is thrown and how it is catched:
+It is possible that for a certain IP no information is found in the database. (This happens for 2 IP Addresses in our log file). In this case, the GeoIP2 will throw an error. This snippet shows which error is thrown and how it is caught:
 
 ```python
 from geoip2.errors import AddressNotFoundError
@@ -353,7 +353,7 @@ Keep in mind that we have explained in Step 1 how to catch the AddressNotFound E
 XgbDCH8AAAEAAEzwAgoAAADF 151.217.218.42 - - [28/Dec/2019:03:50:48 +0100] "GET / HTTP/1.1" 302 222|GET / HTTP/1.1|Host:www.hacking-lab.com|User-Agent:Mozilla/5.0 (X11; Linux x86_64; rv%3a60.0) Gecko/20100101 Firefox/60.0|Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8|Accept-Language:en-US,en;q=0.5|Accept-Encoding:gzip, deflate, br|Connection:keep-alive|Upgrade-Insecure-Requests:1|No Geo Data found
 ```
 
-In the normalized file there is again a large amount of data. It is best to copy some lines into a test file to see if the solution works. 
+In the normalized file, there is again a large amount of data. It is best to copy some lines into a test file to see if the solution works. 
 
 ### Result Task 2
 * You should have an `enrichment.log` out of `normalized.log`
@@ -380,7 +380,7 @@ This is an example of a KML-File with the information of one point:
 </kml>
 ```
 
-To create a KML file with Python, the library simplekml can be used. A point should contain the IP address as the name and a description with the contents of the log entry. For the coordinate data the latitude has always to be specified first and then the longitude.
+To create a KML file with Python, the library simplekml can be used. A point should contain the IP address as the name and a description with the contents of the log entry. For the coordinate data, the latitude has always to be specified first and then the longitude.
 
 This code snippet shows how simplekml is used to create a KML file:
 
@@ -398,18 +398,18 @@ To solve the task, the following data must be extracted from the normalized.log 
 * `Longitude`
 * `Latitude`
 
-For the IP Address the Regex Pattern from Step1 of the Log File Data Enrichment subtask can be used. If, the Log entry of the normalized.log has the format showed in Step 3 of the previous subtask, it is best to extract the latitude with a regex pattern but for the longitude simply the partition string function can be used.
+For the IP Address, the Regex Pattern from Step1 of the Log File Data Enrichment subtask can be used. If, the Log entry of the normalized.log has the format shown in Step 3 of the previous subtask, it is best to extract the latitude with a regex pattern but for the longitude simply the partition string function can be used.
 
-Write a function that extracts the required data from the .normalized log File. Output the data to the console to see if everything worked.
+Write a function that extracts the required data from the .normalized logFile. Output the data to the console to see if everything worked.
 
 ### Step 2
 Our KMl file should have the following information per point:
 * IP address and how many times accessed as name
 * Entire log entry as description
 
-In the KML file each IP address should only appear once, but in addition it should be shown how many times it has been accessed from this IP address.
+In the KML file, each IP address should only appear once, but it should be shown how many times this IP Adress has accessed the web service.
 
-The string for the name of the point should look like this : "192.1.1.1 (127)" This means the IP 192.1.1.1 tried to access 127 times. The description should only contain the log entry of the first IP found.
+The string for the name of the point should look like this: "192.1.1.1 (127)" This means the IP 192.1.1.1 tried to access 127 times. The description should only contain the log entry of the first IP found.
 
 This problem can be solved with dictionaries. A Dictionary contains Key/Value pairs. Each key is separated from its value by a colon (:), the items are separated by commas, and the whole thing is enclosed in curly braces. An empty dictionary without any items is written with just two curly braces, like this: {}.
 
@@ -429,18 +429,18 @@ which gives the following result:
 dict['Name']:  Simon
 dict['Age']:  10
 ```
-To solve our problem, we can use two dictionaries. In both dictionaries you store the IP address as a key. The first dictionary contains of: 
-Key=IP-Adress / Value= Number of times the IP tried to acces and 
+To solve our problem, we can use two dictionaries. In both dictionaries, you store the IP address as a key. The first dictionary contains of: 
+Key=IP-Adress / Value= Number of times the IP tried to access and 
 The second dictionary contains of: Key=IP-Address / Value=False. The value of the second dictionary is set to True when a point was created. This prevents the KML file from having duplicated IP addresses. 
 
-Firstly, open the normalized.log file iterate over it and create the two dictionaries. Secondy, open the normalized.log file iterate over it and create the KML file. 
+Firstly, open the normalized.log file iterate over it and create the two dictionaries. Secondly, open the normalized.log file iterate over it and create the KML file. 
 
 ### Step 3
 The created KML File can be uploaded in Google Maps in the following way:
 
-Open your browser and navigate to Google Maps.Next, Click on the 3 dashes in the upper left corner (Menu). Select "your places" from the list. Under the point "your places" select "Maps". Click on the point "Create Map" at the very bottom. Then use the import point to upload your KML file.
+Open your browser and navigate to Google Maps. Next, Click on the 3 dashes in the upper left corner (Menu). Select "your places" from the list. Under the point "your places" select "Maps". Click on the point "Create Map" at the very bottom. Then use the import point to upload your KML file.
 
-Here is how an a point in google maps should look like:
+Here is how a point in google maps should look like:
 
 ![screenshot](/media/challenge/png/Screen_basic_task.png)
 
@@ -470,12 +470,12 @@ IP (Acces attempts)
 - List of Count HTTP Methods
 - List of Count Statuscodes
 ```
-For Example a resulting Google Maps Point could look like this:
+For Example, a resulting Google Maps Point could look like this:
 
 ![screenshot](/media/challenge/png/Screenshot_Log_Task.png)
 
 
-Now, follows an explanation of how to extract each entry from the log file. In general you can divide this into several methods, which always return a dictionary with the key as IP address and the value is the searched entry from the log file.
+Now, follows an explanation of how to extract each entry from the log file. In general, you can divide this into several methods, which always return a dictionary with the key as IP address and the value is the searched entry from the log file.
 
 ### Find Timestamps
 
@@ -485,11 +485,11 @@ Each timestamp in the log file has the following structure:
 ```
 First comes the day then the month and year. All separated by a "/". Afterwards, hours, minutes and seconds separated by a ":". The last entry is the timezone which always consists of 4 digits.
 
-To get the timestamps, it is best to use regex because the timestamp has a very unique structure. After, you create two methods: one returns a dicitionary with IP as key and min timestamp as value. The second method also returns a dictionary but with the max timestamp.
+To get the timestamps, it is best to use regex because the timestamp has a very unique structure. After, you create two methods: one returns a dictionary with IP as key and min timestamp as value. The second method also returns a dictionary but with the max timestamp.
 
-To be able to compare the time stamps, some theory is still needed:
+To be able to compare the timestamps, some theory is still needed:
 
-In Python there is a datetime library that creates timestamp objects and makes them comparable. An instance of datetime has a member method called strptime. This method allows to parse a string into a timestamp object. The method takes two parameters, the first is the string to be parsed into a timestamp object and the second is a pattern of how the string is parsed. This example shows how to parse a string in the form of our log file entry into a timestamp object and find the smaller of two timestamps:
+In Python there is a DateTime library that creates timestamp objects and makes them comparable. An instance of DateTime has a member method called strptime. This method allows to parse a string into a timestamp object. The method takes two parameters, the first is the string to be parsed into a timestamp object and the second is a pattern of how the string is parsed. This example shows how to parse a string in the form of our log file entry into a timestamp object and find the smaller of two timestamps:
 
 ```python
 from datetime import datetime
@@ -514,11 +514,11 @@ Now the knowledge should be available to create two functions. One that returns 
 These two entries can be found very quickly. In our normalized log file we have entered the countries and cities as follows:
 |Country: ""|
 | City: ""|
-You can use a regex pattern to search for the word City or Country respectively, followed by a space and then any repetition of letters. But you have to take into account that countries or cities can have spaces in themselves. (e.g. United States). Also not every IP address has a country or city entry. You can now create 2 functions again: One which returns a dictionary with IP and country and one with IP and city.
+You can use a regex pattern to search for the word City or Country respectively, followed by a space and then any repetition of letters. But you have to take into account that countries or cities can have spaces in themselves. (e.g. United States). Also, not every IP address has a country or city entry. You can now create 2 functions again: One which returns a dictionary with IP and country and one with IP and city.
 
 ### Http Method with the number of their occurrence
 
-In our point in the KML file we want to show how often an IP address has executed which type of HTTP method.
+In our point in the KML file, we want to show how often an IP address has executed which type of HTTP method.
 
 The following three methods occur in our log file: GET, HEAD and POST. These can also be extracted very easily with Regex. Each of these method types occurs exactly once for each log entry in the structure "\GET...". So you can create three patterns in this form:
 
@@ -527,7 +527,7 @@ pattern_GET = re.compile('\"GET')
 pattern_HEAD = re.compile('\"HEAD')
 pattern_POST = re.compile('\"POST')
 ```
-The best way to solve this is to create a class with three data fields named GET,HEAD and POST and initialize them with 0 as follows:
+The best way to solve this is to create a class with three data fields named GET, HEAD and POST and initialize them with 0 as follows:
 
 ```python
 class Http_Method:
@@ -539,7 +539,7 @@ Now you can create a method that returns a dictionary with the IP address as the
 
 ### Find the browser
 
-The goal is to extract the browser used for each IP address from the log file. Again this can be achieved with Regex. If you take a closer look at the logfile you will see that the browser always follows after "User-Agent:":
+The goal is to extract the browser used for each IP address from the log file. Again this can be achieved with Regex. If you take a closer look at the log file you will see that the browser always follows after "User-Agent:":
 
 ```
 |User-Agent:Mozilla/5.0 (Linux; Android 5.1; ....
@@ -547,7 +547,7 @@ The goal is to extract the browser used for each IP address from the log file. A
 
 So you can create a regex pattern that first searches for the string "User-Agent:" and then for any character until a space occurs. But you have to take into account that the word user-agent is not always written uniformly. It can appear in the form "User-Agent", "User-agent" and "user-agent", i.e. three variants. Also, not every IP address has a user agent, so keep that in mind.
 
-Again, create a method that returns a dictionary with the IP address as key and the browser as value.
+Again, create a method that returns a dictionary with the IP address as a key and the browser as value.
 
 ### Find Status Codes with the number of their occurrence
 
@@ -591,7 +591,7 @@ Finally, we want to know which IP address was used by which operating system. Th
 ```
 (Linux; Android 5.1; iris 605 Build/LMY47I; wv)
 ```
-Usually you have two brackets around the operating system with an undefined sequence of words separated by ";". The problem is that this is also ambiguous. There are also cases where the OS only appears in the following format:
+Usually, you have two brackets around the operating system with an undefined sequence of words separated by ";". The problem is that this is also ambiguous. There are also cases where the OS only appears in the following format:
 
 ```
 (x86_64-redhat-linux-gnu)
