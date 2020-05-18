@@ -286,7 +286,7 @@ Now write a function that extracts the IP address from each line and stores it i
 ### Limitations
 The free GeoIP database is not 100% accurate and does not always find the corresponding country or city. However, the longitude and latitude are always found. If, the city or country is not found the value of the variable will be set to "None"
 
-It is possible that for a certain IP no information is found in the database. (This happens for 2 IP Addresses in our log file). In this case, the GeoIP2 will throw an error. This snippet shows which error is thrown and how it is caught:
+It is possible that for a certain IP no information is found in the database. (This happens for 1 IP Address in our log file). In this case, the GeoIP2 will throw an error. This snippet shows which error is thrown and how it is caught:
 
 ```python
 from geoip2.errors import AddressNotFoundError
