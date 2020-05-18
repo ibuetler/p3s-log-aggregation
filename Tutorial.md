@@ -611,5 +611,5 @@ Keep in mind that there is also not for every IP-Address an OS in the log file. 
 Afterwards, if you have a pattern, you can proceed as usual and create a function that returns a dictionary with the IP address as key and the OS as value.
 
 
-The last step is to create a function that calls all the above functions and stores the corresponding dictionaries in variables. Then you iterate over all IP addresses and create, as in the previous step, the KML file. You have to keep in mind that when you want to add a line break in the description of the KML-file that KML uses HTML. For adding a line break simply add </br> at the end of the text. (br has no opening tag)
+The last step is to create a function that calls all the above functions and stores the corresponding dictionaries in variables. Then you iterate over all IP addresses and create, as in the previous step, the KML file. You have to keep in mind that when you want to add a line break in the description of the KML-file that KML uses HTML. For adding a line break simply add the "br" tag at the end of the text. (br has no opening tag)
 
