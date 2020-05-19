@@ -442,7 +442,7 @@ Open your browser and navigate to Google Maps. Next, Click on the 3 dashes in th
 
 Here is how a point in google maps should look like:
 
-![screenshot](/media/challenge/png/Screen_basic_task.png)
+![screenshot](/media/challenge/png/6eee6ba6-d454-428e-be0a-a92211ea07d5.png)
 
 ### Result Task 3
 * You should have a `normalized.kml` out of `normalized.log` 
@@ -472,7 +472,7 @@ IP (Acces attempts)
 ```
 For Example, a resulting Google Maps Point could look like this:
 
-![screenshot](/media/challenge/png/Screenshot_Log_Task.png)
+![screenshot](/media/challenge/png/c37bfaa2-69c2-4d30-8b3e-f6ff9a23ccd6.png)
 
 
 Now, follows an explanation of how to extract each entry from the log file. In general, you can divide this into several methods, which always return a dictionary with the key as IP address and the value is the searched entry from the log file.
