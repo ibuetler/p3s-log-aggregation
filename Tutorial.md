@@ -596,17 +596,16 @@ Usually, you have two brackets around the operating system with an undefined seq
 ```
 (x86_64-redhat-linux-gnu)
 ```
-Keep in mind that there is also not for every IP-Address an OS in the log file. You can think about a pattern by yourself or you can click below for a solution.
+Keep in mind that there is also not for every IP-Address an OS in the log file. You can think about a pattern by yourself or below is the solution provided.
 
-<details><summary>Pattern</summary>
-<p>
 
+
+
+Pattern:
 ```python
   pattern_os = re.compile("\(Linux[^)]*\)|\(Windows[^)]*\)|\(X11[^)]*\)|\(compatible[^)]*\)|\(Macintosh[^)]*\)|redhat-linux|\(iPhone[^)]*\)|\(Mobile[^)]*\)|pc-linux|\(Android[^)]*\)|\(Spreadtrum[^)]*\)|\(MAUI Runtime[^)]*\)|sogouspider|\(J2ME/MIDP[^)]*\)")
 ```
 
-</p>
-</details>
 
 Afterwards, if you have a pattern, you can proceed as usual and create a function that returns a dictionary with the IP address as key and the OS as value.
 
