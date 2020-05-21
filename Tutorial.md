@@ -433,9 +433,9 @@ To solve our problem, we can use two dictionaries. In both dictionaries, you sto
 Key=IP-Adress / Value= Number of times the IP tried to access 
 and the second dictionary contains of: Key=IP-Address / Value=False. The value of the second dictionary is set to True when a point was created. This prevents the KML file from having duplicated IP addresses. 
 
-Unfortunately, only KML files with a maximum of 1000 points can be uploaded to Google Maps. This must be taken into account when solving this task, because we will have about 2500 points. This problem can be solved by initializing a counter and when the counter reaches 999, the save function of simplekml is called.
+Unfortunately, only KML files with a maximum of 1000 points can be uploaded to Google Maps. This must be taken into account when solving this task, because we will have about 2500 points. This problem can be solved by initializing a counter and when the counter reaches 999, the save function of simplekml is called. Additionally, a second counter for the file names is initialized. Otherwise the same file would only be overwritten. At the end there should be three files (normalized1.kml, normalized2.kml and normalized3.kml)
 
-Firstly, open the normalized.log file iterate over it and create the two dictionaries. Secondly, open the normalized.log file iterate over it and create the KML file. Additionally, a second counter for the file names is initialized. Otherwise the same file would only be overwritten. At the end there should be three files (normalized1.kml, normalized2.kml and normalized3.kml)
+Firstly, open the normalized.log file iterate over it and create the two dictionaries. Secondly, open the normalized.log file iterate over it and create the KML files.
 
 ### Step 3
 The created KML File can be uploaded in Google Maps in the following way:
