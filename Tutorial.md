@@ -430,10 +430,12 @@ dict['Name']:  Simon
 dict['Age']:  10
 ```
 To solve our problem, we can use two dictionaries. In both dictionaries, you store the IP address as a key. The first dictionary contains of: 
-Key=IP-Adress / Value= Number of times the IP tried to access and 
-The second dictionary contains of: Key=IP-Address / Value=False. The value of the second dictionary is set to True when a point was created. This prevents the KML file from having duplicated IP addresses. 
+Key=IP-Adress / Value= Number of times the IP tried to access 
+and the second dictionary contains of: Key=IP-Address / Value=False. The value of the second dictionary is set to True when a point was created. This prevents the KML file from having duplicated IP addresses. 
 
-Firstly, open the normalized.log file iterate over it and create the two dictionaries. Secondly, open the normalized.log file iterate over it and create the KML file. 
+Unfortunately, only KML files with a maximum of 1000 points can be uploaded to Google Maps. This must be taken into account when solving this task, because we will have about 2500 points. This problem can be solved by initializing a counter and when the counter reaches 999, the save function of simplekml is called.
+
+Firstly, open the normalized.log file iterate over it and create the two dictionaries. Secondly, open the normalized.log file iterate over it and create the KML file. Additionally, a second counter for the file names is initialized. Otherwise the same file would only be overwritten. At the end there should be three files (normalized1.kml, normalized2.kml and normalized3.kml)
 
 ### Step 3
 The created KML File can be uploaded in Google Maps in the following way:
@@ -445,7 +447,7 @@ Here is how a point in google maps should look like:
 ![screenshot](/media/challenge/png/6eee6ba6-d454-428e-be0a-a92211ea07d5.png)
 
 ### Result Task 3
-* You should have a `normalized.kml` out of `normalized.log` 
+* You should have three kml files out of `normalized.log` file.
 
 
 ## Conclusion - Task1, Task2, Task3
@@ -610,5 +612,5 @@ Pattern:
 Afterwards, if you have a pattern, you can proceed as usual and create a function that returns a dictionary with the IP address as key and the OS as value.
 
 
-The last step is to create a function that calls all the above functions and stores the corresponding dictionaries in variables. Then you iterate over all IP addresses and create, as in the previous step, the KML file. You have to keep in mind that when you want to add a line break in the description of the KML-file that KML uses HTML. For adding a line break simply add the "br" tag at the end of the text. (br has no opening tag)
+The last step is to create a function that calls all the above functions and stores the corresponding dictionaries in variables. Then you iterate over all IP addresses and create, as in the previous step, the KML file. You have to keep in mind that when you want to add a line break in the description of the KML-file that KML uses HTML. For adding a line break simply add the "br" tag at the end of the text. (br has no opening tag) And keep in mind that a KML file for Google Maps can only contain 999 entries.
 
