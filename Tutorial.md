@@ -455,7 +455,7 @@ After following this tutorial, you should have a python program that is
 
 * Task 1: normalizing the `access.log` and `forensic.log` into a new `normalized.log`
 * Task 2: enriching the `normalized.log` with DNS and GeoIP information into the `enrichment.log`
-* Task 3: visualizing the `enrichment.kml` on Google Maps. 
+* Task 3: visualizing the three kml files on Google Maps. 
 
 
 ## Optional Task 4: Google Maps Optimization
