@@ -487,7 +487,7 @@ Each timestamp in the log file has the following structure:
 ```
 First comes the day then the month and year. All separated by a "/". Afterwards, hours, minutes and seconds separated by a ":". The last entry is the timezone which always consists of 4 digits.
 
-To get the timestamps, it is best to use regex because the timestamp has a very unique structure. After, you create two methods: one returns a dictionary with IP as key and min timestamp as value. The second method also returns a dictionary but with the max timestamp.
+To get the timestamps, it is best to use a regex pattern because the timestamp has a very unique structure. When the regex pattern was found, it is possible to create two functions: one returns a dictionary with the IP address as the key and the min timestamp as the value. The second method also returns a dictionary but with the max timestamp.
 
 To be able to compare the timestamps, some theory is still needed:
 
