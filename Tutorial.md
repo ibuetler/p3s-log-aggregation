@@ -16,7 +16,7 @@ This programming exercise is about analyzing, merging and enriching two given ap
 ### Learn how to ...
 * merge and correlate the two given web server log files into a single file
 * enrich the resulting log file by performing DNS lookups
-* enrich the resulting log file by adding GEO location information (to ip address)
+* enrich the resulting log file by adding GEO location information to the IP address
 * visualize the resulting log file on Google Maps.
 
 ### Goal
